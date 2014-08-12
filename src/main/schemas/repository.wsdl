@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" 
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+xmlns:tns="urn:ihe:iti:xds-b:2007" 
+xmlns:iti="urn:ihe:iti:xds-b:2007" 
+xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" 
+xmlns:wsa10="http://www.w3.org/2005/08/addressing" 
+xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
+xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" 
+xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" 
+xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" 
+xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+name="DocumentRepositoryService" 
+targetNamespace="urn:ihe:iti:xds-b:2007">
+   <wsp:Policy wsu:Id="XDSRepository_HTTP_Endpoint_policy">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <wsoma:OptimizedMimeSerialization xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" />
+            <wsaw:UsingAddressing />
+         </wsp:All>
+      </wsp:ExactlyOne>
+   </wsp:Policy>
+
+   <wsdl:types>
+      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/Message" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/Message">
+	   <xs:import namespace="urn:ihe:iti:xds-b:2007" schemaLocation="XDS.b_DocumentRepository.xsd"/>
+	<xs:element name="RepositoryMessageBody">
+         <xs:complexType>
+            <xs:sequence>
+               <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##any" />
+            </xs:sequence>
+         </xs:complexType>
+	</xs:element>
+
+<!--	<xs:element name="RetrieveDocumentSetRequest" type="iti:RetrieveDocumentSetRequestType"/>
+	<xs:element name="RetrieveDocumentSetResponse" type="iti:RetrieveDocumentSetResponseType"/> -->
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="XDSRepository_ProvideAndRegisterDocumentSet_InputMessage">
+      <wsdl:part xmlns:q1="http://schemas.microsoft.com/Message" name="input" element="q1:RetrieveDocumentSetRequest" />
+   </wsdl:message>
+   <wsdl:message name="XDSRepository_ProvideAndRegisterDocumentSet_OutputMessage">
+      <wsdl:part xmlns:q2="http://schemas.microsoft.com/Message" name="ProvideAndRegisterDocumentSetResult" element="q2:RetrieveDocumentSetResponse" />
+   </wsdl:message>
+   <wsdl:message name="XDSRepository_RetrieveDocumentSet_InputMessage">
+      <wsdl:part xmlns:q3="http://schemas.microsoft.com/Message" name="input" element="q3:RepositoryMessageBody" />
+   </wsdl:message>
+   <wsdl:message name="XDSRepository_RetrieveDocumentSet_OutputMessage">
+      <wsdl:part xmlns:q4="http://schemas.microsoft.com/Message" name="RetrieveDocumentSetResult" element="q4:RepositoryMessageBody" />
+   </wsdl:message>
+   <wsdl:portType name="XDSRepository">
+      <wsdl:operation name="ProvideAndRegisterDocumentSet">
+         <wsdl:input wsaw:Action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b" message="tns:XDSRepository_ProvideAndRegisterDocumentSet_InputMessage" />
+         <wsdl:output wsaw:Action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse" message="tns:XDSRepository_ProvideAndRegisterDocumentSet_OutputMessage" />
+      </wsdl:operation>
+      <wsdl:operation name="RetrieveDocumentSet">
+         <wsdl:input wsaw:Action="urn:ihe:iti:2007:RetrieveDocumentSet" message="tns:XDSRepository_RetrieveDocumentSet_InputMessage" />
+         <wsdl:output wsaw:Action="urn:ihe:iti:2007:RetrieveDocumentSetResponse" message="tns:XDSRepository_RetrieveDocumentSet_OutputMessage" />
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="XDSRepository_HTTP_Endpoint" type="tns:XDSRepository">
+      <wsp:PolicyReference URI="#XDSRepository_HTTP_Endpoint_policy" />
+      <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+      <wsdl:operation name="ProvideAndRegisterDocumentSet">
+         <soap12:operation soapAction="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b" style="document" />
+         <wsdl:input>
+            <soap12:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap12:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="RetrieveDocumentSet">
+         <soap12:operation soapAction="urn:ihe:iti:2007:RetrieveDocumentSet" style="document" />
+         <wsdl:input>
+            <soap12:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap12:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="DocumentRepositoryService">
+      <wsdl:port name="XDSRepository_HTTP_Endpoint" binding="tns:XDSRepository_HTTP_Endpoint">
+         <soap12:address location="http://n4cxds.nfit.au.dk:1026/XdsService/XDSRepository" />
+         <wsa10:EndpointReference>
+            <wsa10:Address>http://n4cxds.nfit.au.dk:1026/XdsService/XDSRepository</wsa10:Address>
+         </wsa10:EndpointReference>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

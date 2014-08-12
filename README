@@ -1,0 +1,6 @@
+compile and run with the following commands
+
+$ mvn clean install
+$ java -jar target/resource-server.jar
+
+the application is deployed on port 8081 (http)

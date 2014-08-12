@@ -1,0 +1,137 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.net4care.auth</groupId>
+  <artifactId>xds-connector</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>XDS Connector</name>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.0.2.RELEASE</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <start-class>org.net4care.xdsconnector.Application</start-class>
+    <java.version>1.7</java.version>
+  </properties>
+
+
+  <build>
+    <finalName>xds-connector</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    
+<plugin>
+    <groupId>org.jvnet.jaxb2.maven2</groupId>
+    <artifactId>maven-jaxb2-plugin</artifactId>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <schemaLanguage>WSDL</schemaLanguage>
+        <generatePackage>org.net4care.xdsconnector.service</generatePackage>
+        <forceRegenerate>true</forceRegenerate>
+	<verbose>true</verbose>
+<debug>true</debug>
+        <schemas>
+           <schema>
+            <fileset>                                                                      
+                <directory>${basedir}/src/main/schemas</directory>                                
+                <includes>                                                             
+                    <include>*.wsdl</include>                                         
+                </includes>                                                            
+                <excludes>                                                             
+                    <exclude>*.xsd</exclude>                                        
+                </excludes>                                                            
+            </fileset>
+           </schema>
+<!--
+            <schema>
+                <url>http://10.29.1.12:1025/xdsservice/xdsregistry?wsdl</url>
+            </schema>
+		<schema>
+                <url>http://10.29.1.12:1026/xdsservice/xdsrepository?wsdl</url>
+            </schema> -->
+        </schemas>
+    </configuration>
+</plugin>
+</plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.9</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.ws</groupId>
+        <artifactId>spring-ws-core</artifactId>
+        <version>2.2.0.RELEASE</version>
+    </dependency>
+
+<dependency>
+	<groupId>org.apache.ws.commons.axiom</groupId>
+	<artifactId>axiom-api</artifactId>
+	<version>1.2.14</version>
+</dependency>
+
+<dependency>
+	<groupId>org.apache.ws.commons.axiom</groupId>
+	<artifactId>axiom-impl</artifactId>
+	<version>1.2.14</version>
+</dependency>
+
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>spring-framework</id>
+      <name>Spring Framework</name>
+      <url>http://repo.spring.io/release/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+	<pluginRepository>
+	    <id>in-project</id>
+	    <name>In Project Repo</name>
+	    <url>file://${project.basedir}/libs</url>
+	</pluginRepository>
+    <pluginRepository>
+      <id>spring-framework</id>
+      <url>http://repo.spring.io/release/</url>
+    </pluginRepository>
+  </pluginRepositories>
+</project>
