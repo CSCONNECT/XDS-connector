@@ -11,14 +11,11 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration
 public class Application {
     public static void main(String[] args) {
-    	
     	ApplicationContext ctx = SpringApplication.run(Application.class, args);
 
 		XDSConnector client = ctx.getBean(XDSConnector.class);
 
 		RetrieveDocumentSetResponseType response = client.get();
 		System.out.println(response);
-    	
-//        SpringApplication.run(Application.class, args);
     }
 }

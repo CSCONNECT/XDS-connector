@@ -14,9 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <start-class>org.net4care.xdsconnector.Application</start-class>
-    <java.version>1.7</java.version>
   </properties>
-
 
   <build>
     <finalName>xds-connector</finalName>
@@ -36,45 +34,37 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
     
-<plugin>
-    <groupId>org.jvnet.jaxb2.maven2</groupId>
-    <artifactId>maven-jaxb2-plugin</artifactId>
-    <executions>
-        <execution>
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+        <version>0.9.0</version>
+        <executions>
+          <execution>
             <goals>
-                <goal>generate</goal>
+              <goal>generate</goal>
             </goals>
-        </execution>
-    </executions>
-    <configuration>
-        <schemaLanguage>WSDL</schemaLanguage>
-        <generatePackage>org.net4care.xdsconnector.service</generatePackage>
-        <forceRegenerate>true</forceRegenerate>
-	<verbose>true</verbose>
-<debug>true</debug>
-        <schemas>
-           <schema>
-            <fileset>                                                                      
+          </execution>
+        </executions>
+        <configuration>
+          <schemaLanguage>WSDL</schemaLanguage>
+          <generatePackage>org.net4care.xdsconnector.service</generatePackage>
+          <!--<forceRegenerate>true</forceRegenerate>-->
+          <schemas>
+            <schema>
+              <fileset>                                                                      
                 <directory>${basedir}/src/main/schemas</directory>                                
                 <includes>                                                             
-                    <include>*.wsdl</include>                                         
+                  <include>*.wsdl</include>                                         
                 </includes>                                                            
                 <excludes>                                                             
-                    <exclude>*.xsd</exclude>                                        
+                  <exclude>*.xsd</exclude>                                        
                 </excludes>                                                            
-            </fileset>
-           </schema>
-<!--
-            <schema>
-                <url>http://10.29.1.12:1025/xdsservice/xdsregistry?wsdl</url>
+              </fileset>
             </schema>
-		<schema>
-                <url>http://10.29.1.12:1026/xdsservice/xdsrepository?wsdl</url>
-            </schema> -->
-        </schemas>
-    </configuration>
-</plugin>
-</plugins>
+          </schemas>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -101,18 +91,17 @@
         <version>2.2.0.RELEASE</version>
     </dependency>
 
-<dependency>
-	<groupId>org.apache.ws.commons.axiom</groupId>
-	<artifactId>axiom-api</artifactId>
-	<version>1.2.14</version>
-</dependency>
+    <dependency>
+      <groupId>org.apache.ws.commons.axiom</groupId>
+      <artifactId>axiom-api</artifactId>
+      <version>1.2.14</version>
+    </dependency>
 
-<dependency>
-	<groupId>org.apache.ws.commons.axiom</groupId>
-	<artifactId>axiom-impl</artifactId>
-	<version>1.2.14</version>
-</dependency>
-
+    <dependency>
+      <groupId>org.apache.ws.commons.axiom</groupId>
+      <artifactId>axiom-impl</artifactId>
+      <version>1.2.14</version>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -124,11 +113,11 @@
   </repositories>
 
   <pluginRepositories>
-	<pluginRepository>
-	    <id>in-project</id>
-	    <name>In Project Repo</name>
-	    <url>file://${project.basedir}/libs</url>
-	</pluginRepository>
+    <pluginRepository>
+      <id>in-project</id>
+      <name>In Project Repo</name>
+      <url>file://${project.basedir}/libs</url>
+    </pluginRepository>
     <pluginRepository>
       <id>spring-framework</id>
       <url>http://repo.spring.io/release/</url>
