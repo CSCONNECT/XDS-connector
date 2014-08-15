@@ -19,12 +19,12 @@ public class ConnectorConfiguration {
 	}
 
 	@Bean
-	public XDSConnector weatherClient(Jaxb2Marshaller marshaller) {
+	public XDSConnector xdsConnector(Jaxb2Marshaller marshaller) {
 		XDSConnector client = new XDSConnector();
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
-		mf.setAttachmentCacheDir(new File("/home/brian/tmp/"));
+		mf.setAttachmentCacheDir(new File("/tmp/"));
 		
 		client.setMessageFactory(mf);
 		client.setDefaultUri("http://n4cxds.nfit.au.dk:1026/XdsService/XDSRepository/");

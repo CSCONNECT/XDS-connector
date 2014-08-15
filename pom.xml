@@ -1,19 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.net4care.auth</groupId>
+  <groupId>org.net4care</groupId>
   <artifactId>xds-connector</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>XDS Connector</name>
-
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.1.5.RELEASE</version>
-  </parent>
+  <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <start-class>org.net4care.xdsconnector.Application</start-class>
   </properties>
 
   <build>
@@ -29,11 +23,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>
@@ -68,23 +57,26 @@
   </build>
 
   <dependencies>
+<!--
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
+-->
+<!--
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.2.4</version>
     </dependency>
-
+-->
+<!--
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.9</version>
     </dependency>
-
+-->
     <dependency>
       <groupId>org.springframework.ws</groupId>
       <artifactId>spring-ws-core</artifactId>
