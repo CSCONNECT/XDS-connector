@@ -114,11 +114,6 @@
 
   <pluginRepositories>
     <pluginRepository>
-      <id>in-project</id>
-      <name>In Project Repo</name>
-      <url>file://${project.basedir}/libs</url>
-    </pluginRepository>
-    <pluginRepository>
       <id>spring-framework</id>
       <url>http://repo.spring.io/release/</url>
     </pluginRepository>
