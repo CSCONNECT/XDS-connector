@@ -1,0 +1,4 @@
+<bindings version="2.0" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <globalBindings typesafeEnumMaxMembers="1000" />
+</bindings>
+

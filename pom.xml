@@ -37,17 +37,18 @@
         <configuration>
           <schemaLanguage>WSDL</schemaLanguage>
           <generatePackage>org.net4care.xdsconnector.service</generatePackage>
+          <bindingDirectory>${basedir}/src/main/xjb</bindingDirectory>
           <!--<forceRegenerate>true</forceRegenerate>-->
           <schemas>
             <schema>
               <fileset>                                                                      
-                <directory>${basedir}/src/main/schemas</directory>                                
-                <includes>                                                             
-                  <include>*.wsdl</include>                                         
-                </includes>                                                            
-                <excludes>                                                             
-                  <exclude>*.xsd</exclude>                                        
-                </excludes>                                                            
+                <directory>${basedir}/src/main/wsdl</directory>
+                <includes>
+                  <include>*.wsdl</include>
+                </includes>
+                <excludes>
+                  <exclude>*.xsd</exclude>
+                </excludes>
               </fileset>
             </schema>
           </schemas>

@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema 
-xmlns="urn:ihe:iti:xds-b:2007" 
-xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" 
-xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" 
-xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" 
-xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" 
-targetNamespace="urn:ihe:iti:xds-b:2007" 
-elementFormDefault="qualified" 
-attributeFormDefault="unqualified">
-	<xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
-schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schema/rs.xsd"/>
-        <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
-schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schema/rim.xsd"/>
-        <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0"
-schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schema/lcm.xsd"/>
-        <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
-schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schema/query.xsd"/>
-	<xs:complexType name="RetrieveDocumentSetRequestType">
-		<xs:sequence>
-			<xs:element name="DocumentRequest" maxOccurs="unbounded">
-				<xs:complexType>
-					<xs:sequence>
+   xmlns="urn:ihe:iti:xds-b:2007" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" 
+   xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" 
+   xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" 
+   xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" 
+   targetNamespace="urn:ihe:iti:xds-b:2007" 
+   elementFormDefault="qualified" 
+   attributeFormDefault="unqualified">
+   
+   <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" schemaLocation="../schema/rs.xsd"/>
+   <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" schemaLocation="../schema/rim.xsd"/>
+   <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" schemaLocation="../schema/lcm.xsd"/>
+   <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" schemaLocation="../schema/query.xsd"/>
+
+   <xs:complexType name="RetrieveDocumentSetRequestType">
+      <xs:sequence>
+         <xs:element name="DocumentRequest" maxOccurs="unbounded">
+            <xs:complexType>
+               <xs:sequence>
 						<xs:element name="HomeCommunityId" type="rim:LongName" minOccurs="0">
 							<xs:annotation>
 								<xs:documentation>This corresponds to the home attribute of the Identifiable class in regrep RIM (regrep-rim-3.0-os.pdf, page 20)</xs:documentation>
@@ -41,8 +39,9 @@ schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schem
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="RetrieveDocumentSetResponseType">
+   </xs:complexType>
+   
+   <xs:complexType name="RetrieveDocumentSetResponseType">
 		<xs:sequence>
 			<xs:element ref="rs:RegistryResponse"/>
 			<xs:sequence minOccurs="0">
@@ -81,10 +80,12 @@ schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schem
 				</xs:element>
 			</xs:sequence>
 		</xs:sequence>
-	</xs:complexType>
-	<xs:element name="RetrieveDocumentSetRequest" type="RetrieveDocumentSetRequestType"/>
-	<xs:element name="RetrieveDocumentSetResponse" type="RetrieveDocumentSetResponseType"/>
-	<xs:complexType name="ProvideAndRegisterDocumentSetRequestType">
+   </xs:complexType>
+	
+   <xs:element name="RetrieveDocumentSetRequest" type="RetrieveDocumentSetRequestType"/>
+   <xs:element name="RetrieveDocumentSetResponse" type="RetrieveDocumentSetResponseType"/>
+   
+   <xs:complexType name="ProvideAndRegisterDocumentSetRequestType">
 		<xs:sequence>
 			<xs:element ref="lcm:SubmitObjectsRequest"/>
 			<xs:sequence minOccurs="0">
@@ -103,6 +104,7 @@ schemaLocation="https://www.oasis-open.org/committees/regrep/documents/3.0/schem
 				</xs:element>
 			</xs:sequence>
 		</xs:sequence>
-	</xs:complexType>
-	<xs:element name="ProvideAndRegisterDocumentSetRequest" type="ProvideAndRegisterDocumentSetRequestType"/>
+   </xs:complexType>
+   
+   <xs:element name="ProvideAndRegisterDocumentSetRequest" type="ProvideAndRegisterDocumentSetRequestType"/>
 </xs:schema>
