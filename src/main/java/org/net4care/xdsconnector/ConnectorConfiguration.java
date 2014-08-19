@@ -18,9 +18,9 @@ public class ConnectorConfiguration {
 		return marshaller;
 	}
 
-	@Bean(name="repository")
-	public XDSConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
-		XDSConnector client = new XDSConnector();
+	@Bean
+	public XDSRepositoryConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
+		XDSRepositoryConnector client = new XDSRepositoryConnector();
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
@@ -34,9 +34,9 @@ public class ConnectorConfiguration {
 		return client;
 	}
 	
-	@Bean(name="registry")
-	public XDSConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
-		XDSConnector client = new XDSConnector();
+	@Bean
+	public XDSRegistryConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
+		XDSRegistryConnector client = new XDSRegistryConnector();
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);

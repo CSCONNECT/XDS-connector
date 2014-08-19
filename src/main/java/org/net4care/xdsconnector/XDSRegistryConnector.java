@@ -21,36 +21,21 @@ import org.springframework.ws.client.core.WebServiceMessageCallback;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.axiom.AxiomSoapMessage;
 
-public class XDSConnector extends WebServiceGatewaySupport {	
-	public RetrieveDocumentSetResponseType getDocument(String docId) {		
-		// using the JAXB Wrapper voids the requirement for a @XMLRootElement annotation on the domain model objects
-		RetrieveDocumentSetRequestType request = new RetrieveDocumentSetRequestType();
-		JAXBElement<RetrieveDocumentSetRequestType> requestWrapper = new ObjectFactory().createRetrieveDocumentSetRequest(request);
-
-		DocumentRequest documentRequest = new DocumentRequest();
-		documentRequest.setRepositoryUniqueId("1.3.6.1.4.1.21367.13.40.8");
-		documentRequest.setDocumentUniqueId(docId);
-		request.getDocumentRequest().add(documentRequest);
-
-		@SuppressWarnings("unchecked")
-		JAXBElement<RetrieveDocumentSetResponseType> result = (JAXBElement<RetrieveDocumentSetResponseType>) getWebServiceTemplate().marshalSendAndReceive(requestWrapper, new WebServiceMessageCallback() {
+public class XDSRegistryConnector extends WebServiceGatewaySupport {	
+	/*
+	 *
+	 * MHD Get Document Dossier = 
+			XDS Registry Stored Query – GetDocuments
 			
-			@Override
-			public void doWithMessage(WebServiceMessage message) throws IOException, TransformerException {
-		        AxiomSoapMessage soapMessage = (AxiomSoapMessage) message;
+		MHD Find Document Dossiers = 
+	XDS Registry Stored Query –	FindDocuments+FindSubmissionSets+FindFolders
 
-		        soapMessage.getSoapHeader()
-		        		.addHeaderElement(new QName("http://www.w3.org/2005/08/addressing", "Action", "wsa"))
-		        		.setText("urn:ihe:iti:2007:RetrieveDocumentSet");
-
-		        soapMessage.getSoapHeader()
-		        	.addHeaderElement(new QName("http://www.w3.org/2005/08/addressing", "To", "wsa"))
-		        	.setText("http://10.29.1.12:1026/XdsService/XDSRepository/");
-			}
-		});
-		
-		return result.getValue();
-	}
+	 * 
+	 */
+	
+			
+			
+	
 	
 	public AdhocQueryResponseType queryRegistry() {
 		AdhocQueryRequestType request = new ObjectFactory().createAdhocQueryRequestType();
@@ -58,7 +43,8 @@ public class XDSConnector extends WebServiceGatewaySupport {
 		
 		ResponseOptionType responseOption = new ResponseOptionType();
 		responseOption.setReturnComposedObjects(true);
-		responseOption.setReturnType("ObjectRef"); // LeafClass is another option, which returns a ton of data on each object
+		//responseOption.setReturnType("ObjectRef"); // LeafClass is another option, which returns a ton of data on each object
+		responseOption.setReturnType("LeafClass"); 
 		request.setResponseOption(responseOption);
 		
 		SlotType1 patientIdSlot = new SlotType1();
