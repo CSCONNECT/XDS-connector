@@ -18,8 +18,8 @@ public class ConnectorConfiguration {
 		return marshaller;
 	}
 
-	@Bean
-	public XDSConnector xdsConnector(Jaxb2Marshaller marshaller) {
+	@Bean(name="repository")
+	public XDSConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
 		XDSConnector client = new XDSConnector();
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
@@ -33,6 +33,20 @@ public class ConnectorConfiguration {
 
 		return client;
 	}
+	
+	@Bean(name="registry")
+	public XDSConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
+		XDSConnector client = new XDSConnector();
 
+		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
+		mf.setSoapVersion(SoapVersion.SOAP_12);
+		mf.setAttachmentCacheDir(new File("/tmp/"));
+		
+		client.setMessageFactory(mf);
+		client.setDefaultUri("http://n4cxds.nfit.au.dk:1025/XdsService/XDSRegistry/");
+		client.setMarshaller(marshaller);
+		client.setUnmarshaller(marshaller);
+
+		return client;
+	}
 }
-

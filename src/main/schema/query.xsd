@@ -22,7 +22,7 @@
     <annotation>
       <documentation xml:lang="en">An Ad hoc query request specifies an ad hoc query.</documentation>
     </annotation>
-    <complexType>
+    <complexType name="AdhocQueryRequestType">
       <complexContent>
         <extension base="rs:RegistryRequestType">
           <sequence>
@@ -44,7 +44,7 @@
         RegistryObjects that match the query specified in AdhocQueryRequest.
       </documentation>
     </annotation>
-    <complexType>
+    <complexType name="AdhocQueryResponseType">
       <complexContent>
         <extension base="rs:RegistryResponseType">
           <sequence>
