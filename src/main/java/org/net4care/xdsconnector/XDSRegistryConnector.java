@@ -12,9 +12,6 @@ import org.net4care.xdsconnector.service.AdhocQueryResponseType;
 import org.net4care.xdsconnector.service.AdhocQueryType;
 import org.net4care.xdsconnector.service.ObjectFactory;
 import org.net4care.xdsconnector.service.ResponseOptionType;
-import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType;
-import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType.DocumentRequest;
-import org.net4care.xdsconnector.service.RetrieveDocumentSetResponseType;
 import org.net4care.xdsconnector.service.SlotType1;
 import org.net4care.xdsconnector.service.ValueListType;
 import org.springframework.ws.WebServiceMessage;
@@ -33,11 +30,7 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 
 	 * 
 	 */
-	
-			
-			
-	
-	
+		
 	public AdhocQueryResponseType queryRegistry() {
 		AdhocQueryRequestType request = new ObjectFactory().createAdhocQueryRequestType();
 		JAXBElement<AdhocQueryRequestType> requestWrapper = new ObjectFactory().createAdhocQueryRequest(request);

@@ -2,14 +2,23 @@ package org.net4care.xdsconnector;
 
 import java.io.File;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.soap.SoapVersion;
 import org.springframework.ws.soap.axiom.AxiomSoapMessageFactory;
 
 @Configuration
+@PropertySource(value="classpath:xds.properties")
 public class ConnectorConfiguration {
+
+	@Value("${xds.repository}")
+	private String repositoryUrl;	
+	
+	@Value("${xds.registry}")
+	private String registryUrl;
 
 	@Bean
 	public Jaxb2Marshaller marshaller() {
@@ -27,7 +36,7 @@ public class ConnectorConfiguration {
 		mf.setAttachmentCacheDir(new File("/tmp/"));
 		
 		client.setMessageFactory(mf);
-		client.setDefaultUri("http://n4cxds.nfit.au.dk:1026/XdsService/XDSRepository/");
+		client.setDefaultUri(repositoryUrl);
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
 
@@ -43,7 +52,7 @@ public class ConnectorConfiguration {
 		mf.setAttachmentCacheDir(new File("/tmp/"));
 		
 		client.setMessageFactory(mf);
-		client.setDefaultUri("http://n4cxds.nfit.au.dk:1025/XdsService/XDSRegistry/");
+		client.setDefaultUri(registryUrl);
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
 

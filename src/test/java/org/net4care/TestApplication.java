@@ -17,7 +17,12 @@ public class TestApplication {
 	        
 	        XDSRepositoryConnector client = run.getBean(XDSRepositoryConnector.class);
 	        
+	        // Microsoft XDS document
 	        RetrieveDocumentSetResponseType document = client.getDocument("8b3a64f5-4859-4978-b254-70700e339c2e", "1.3.6.1.4.1.21367.13.40.8");
+	        
+	        // KIH document
+//	        RetrieveDocumentSetResponseType document = client.getDocument("6681d517-1423-4913-8f00-c8fdc9957dd7", "1.3.6.1.4.1.21367.13.40.8");
+	        
 	        DocumentResponse documentResponse = document.getDocumentResponse().get(0);
 	        
 	        System.out.println("\nresult = " + new String(documentResponse.getDocument()) + "\n");
