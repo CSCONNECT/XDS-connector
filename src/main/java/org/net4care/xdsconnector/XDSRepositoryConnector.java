@@ -1,6 +1,7 @@
 package org.net4care.xdsconnector;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -41,6 +42,11 @@ public class XDSRepositoryConnector extends WebServiceGatewaySupport {
 		        soapMessage.getSoapHeader()
 		        	.addHeaderElement(new QName("http://www.w3.org/2005/08/addressing", "To", "wsa"))
 		        	.setText("http://10.29.1.12:1026/XdsService/XDSRepository/");
+		        
+		        UUID uuid = UUID.randomUUID();
+                soapMessage.getSoapHeader()
+                        .addHeaderElement(new QName("http://www.w3.org/2005/08/addressing", "MessageID", "wsa"))
+                        .setText("urn:uuid:" + uuid.toString());
 			}
 		});
 		
