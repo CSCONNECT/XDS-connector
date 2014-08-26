@@ -1,6 +1,7 @@
 package org.net4care.xdsconnector;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBElement;
@@ -16,6 +17,7 @@ import org.net4care.xdsconnector.service.SlotType1;
 import org.net4care.xdsconnector.service.ValueListType;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.client.core.WebServiceMessageCallback;
+import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.axiom.AxiomSoapMessage;
 
@@ -31,7 +33,7 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 	 * 
 	 */
 		
-	public AdhocQueryResponseType queryRegistry() {
+	public AdhocQueryResponseType queryRegistry(List<SlotType1> slots) {
 		AdhocQueryRequestType request = new ObjectFactory().createAdhocQueryRequestType();
 		JAXBElement<AdhocQueryRequestType> requestWrapper = new ObjectFactory().createAdhocQueryRequest(request);
 		
@@ -40,7 +42,7 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 		//responseOption.setReturnType("ObjectRef"); // LeafClass is another option, which returns a ton of data on each object
 		responseOption.setReturnType("LeafClass"); 
 		request.setResponseOption(responseOption);
-		
+		/*
 		SlotType1 patientIdSlot = new SlotType1();
 		patientIdSlot.setName("$XDSDocumentEntryPatientId");
 		patientIdSlot.setValueList(new ValueListType());
@@ -50,10 +52,11 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 		statusSlot.setName("$XDSDocumentEntryStatus");
 		statusSlot.setValueList(new ValueListType());
 		statusSlot.getValueList().getValue().add("('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')");
-		
+	*/	
 		AdhocQueryType adhocQuery = new AdhocQueryType();
-		adhocQuery.getSlot().add(patientIdSlot);
-		adhocQuery.getSlot().add(statusSlot);
+		adhocQuery.getSlot().addAll(slots);
+//		adhocQuery.getSlot().add(patientIdSlot);
+//		adhocQuery.getSlot().add(statusSlot);
 		
 		adhocQuery.setId("urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d");
 		
