@@ -58,6 +58,7 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 //		adhocQuery.getSlot().add(patientIdSlot);
 //		adhocQuery.getSlot().add(statusSlot);
 		
+		// TODO: generate id randomly?
 		adhocQuery.setId("urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d");
 		
 		request.setAdhocQuery(adhocQuery);
