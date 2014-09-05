@@ -36,33 +36,23 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 	public AdhocQueryResponseType queryRegistry(List<SlotType1> slots) {
 		AdhocQueryRequestType request = new ObjectFactory().createAdhocQueryRequestType();
 		JAXBElement<AdhocQueryRequestType> requestWrapper = new ObjectFactory().createAdhocQueryRequest(request);
-		
+
+		//Build the XDS query
 		ResponseOptionType responseOption = new ResponseOptionType();
 		responseOption.setReturnComposedObjects(true);
-		//responseOption.setReturnType("ObjectRef"); // LeafClass is another option, which returns a ton of data on each object
-		responseOption.setReturnType("LeafClass"); 
+		//responseOption.setReturnType("ObjectRef"); //ObjectRef only returns references for each object
+		responseOption.setReturnType("LeafClass"); // LeafClass is another option, which returns a ton of data on each object
 		request.setResponseOption(responseOption);
-		/*
-		SlotType1 patientIdSlot = new SlotType1();
-		patientIdSlot.setName("$XDSDocumentEntryPatientId");
-		patientIdSlot.setValueList(new ValueListType());
-		patientIdSlot.getValueList().getValue().add("'2512484916^^^&2.16.840.1.113883.3.1558.2.1&ISO'");
 		
-		SlotType1 statusSlot = new SlotType1();
-		statusSlot.setName("$XDSDocumentEntryStatus");
-		statusSlot.setValueList(new ValueListType());
-		statusSlot.getValueList().getValue().add("('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')");
-	*/	
 		AdhocQueryType adhocQuery = new AdhocQueryType();
 		adhocQuery.getSlot().addAll(slots);
-//		adhocQuery.getSlot().add(patientIdSlot);
-//		adhocQuery.getSlot().add(statusSlot);
 		
 		// TODO: generate id randomly?
 		adhocQuery.setId("urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d");
 		
 		request.setAdhocQuery(adhocQuery);
 		
+		// Query the XDS registry
 		@SuppressWarnings("unchecked")
 		JAXBElement<AdhocQueryResponseType> result = (JAXBElement<AdhocQueryResponseType>) getWebServiceTemplate().marshalSendAndReceive(requestWrapper, new WebServiceMessageCallback() {
 			
