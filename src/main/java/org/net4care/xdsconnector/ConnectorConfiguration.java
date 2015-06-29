@@ -2,23 +2,30 @@ package org.net4care.xdsconnector;
 
 import java.io.File;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.soap.SoapVersion;
 import org.springframework.ws.soap.axiom.AxiomSoapMessageFactory;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
-public class ConnectorConfiguration {
+public class  ConnectorConfiguration {
 
-	@Value("${xds.repository}")
-	private String repositoryUrl;	
+  @Value("${xds.repositoryUrl}")
+	private String repositoryUrl;
 	
-	@Value("${xds.registry}")
+	@Value("${xds.registryUrl}")
 	private String registryUrl;
+
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 
 	@Bean
 	public Jaxb2Marshaller marshaller() {
@@ -33,7 +40,8 @@ public class ConnectorConfiguration {
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
-		mf.setAttachmentCacheDir(new File("/tmp/"));
+    String tmpdir = System.getProperty("java.io.tmpdir");
+		mf.setAttachmentCacheDir(new File(tmpdir));
 		
 		client.setMessageFactory(mf);
 		client.setDefaultUri(repositoryUrl);
@@ -49,7 +57,8 @@ public class ConnectorConfiguration {
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
-		mf.setAttachmentCacheDir(new File("/tmp/"));
+    String tmpdir = System.getProperty("java.io.tmpdir");
+		mf.setAttachmentCacheDir(new File(tmpdir));
 		
 		client.setMessageFactory(mf);
 		client.setDefaultUri(registryUrl);
