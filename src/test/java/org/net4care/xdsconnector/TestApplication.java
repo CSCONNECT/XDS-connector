@@ -1,6 +1,5 @@
-package org.net4care;
+package org.net4care.xdsconnector;
 
-import org.net4care.xdsconnector.XDSRepositoryConnector;
 import org.net4care.xdsconnector.service.RetrieveDocumentSetResponseType;
 import org.net4care.xdsconnector.service.RetrieveDocumentSetResponseType.DocumentResponse;
 import org.springframework.boot.SpringApplication;

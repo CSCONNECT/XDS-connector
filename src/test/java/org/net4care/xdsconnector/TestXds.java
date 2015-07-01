@@ -1,4 +1,4 @@
-package org.net4care;
+package org.net4care.xdsconnector;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
