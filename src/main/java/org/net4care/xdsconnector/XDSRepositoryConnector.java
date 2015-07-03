@@ -2,11 +2,8 @@ package org.net4care.xdsconnector;
 
 import javax.xml.bind.JAXBElement;
 
-import org.net4care.xdsconnector.service.ObjectFactory;
-import org.net4care.xdsconnector.service.ProvideAndRegisterDocumentSetRequestType;
-import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType;
+import org.net4care.xdsconnector.service.*;
 import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType.DocumentRequest;
-import org.net4care.xdsconnector.service.RetrieveDocumentSetResponseType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +11,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
+import java.util.UUID;
+
 @Configuration
 @PropertySource(value="classpath:xds.properties")
 public class XDSRepositoryConnector extends WebServiceGatewaySupport {
+
+  private MetadataHelper metadataHelper = new MetadataHelper();
 
   @Value("${xds.repositoryId}")
   private String repositoryId;
@@ -46,12 +47,14 @@ public class XDSRepositoryConnector extends WebServiceGatewaySupport {
 		return result.getValue();
 	}
 
-  public ProvideAndRegisterDocumentSetRequestType putDocument(String docId) {
+  public ProvideAndRegisterDocumentSetRequestType putDocument(String cda) {
     // using the JAXB Wrapper voids the requirement for a @XMLRootElement annotation on the domain model objects
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
     JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
-
+    String homeCommunityId = "87"; // TODO
+    SubmitObjectsRequest submitRequest = metadataHelper.buildSubmitObjectsRequest(cda, homeCommunityId);
+    request.setSubmitObjectsRequest(submitRequest);
 
     @SuppressWarnings("unchecked")
     JAXBElement<ProvideAndRegisterDocumentSetRequestType> result = (JAXBElement<ProvideAndRegisterDocumentSetRequestType>) getWebServiceTemplate()

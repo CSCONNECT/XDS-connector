@@ -40,8 +40,8 @@ public class TestXds {
   @Test
   public void putDocument() {
     try {
-      UUID uuid = UUID.randomUUID();
-      ProvideAndRegisterDocumentSetRequestType document = xdsRepositoryConnector.putDocument(uuid.toString());
+      String doc = "";
+      ProvideAndRegisterDocumentSetRequestType document = xdsRepositoryConnector.putDocument(doc);
 
     }
     catch (Throwable t) {
