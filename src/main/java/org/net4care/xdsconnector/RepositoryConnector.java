@@ -2,7 +2,7 @@ package org.net4care.xdsconnector;
 
 import javax.xml.bind.JAXBElement;
 
-import org.net4care.xdsconnector.Constants.CUUID;
+import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
 import org.net4care.xdsconnector.service.*;
 import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType.DocumentRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,15 +12,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
-import java.util.List;
-import java.util.UUID;
-
 @Configuration
 @PropertySource(value="classpath:xds.properties")
-public class XDSRepositoryConnector extends WebServiceGatewaySupport {
-
-  // TODO: load home community id from properties
-  private MetadataHelper metadataHelper = new MetadataHelper("");
+public class RepositoryConnector extends WebServiceGatewaySupport {
 
   @Value("${xds.repositoryId}")
   private String repositoryId;
@@ -46,7 +40,7 @@ public class XDSRepositoryConnector extends WebServiceGatewaySupport {
 
       @SuppressWarnings("unchecked")
       JAXBElement<RetrieveDocumentSetResponseType> result = (JAXBElement<RetrieveDocumentSetResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new XDSMessageCallback(repositoryUrl, "RetrieveDocumentSet"));
+          .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "RetrieveDocumentSet"));
 
       return result.getValue();
     }
@@ -57,32 +51,33 @@ public class XDSRepositoryConnector extends WebServiceGatewaySupport {
 
   public RegistryResponseType provideAndRegisterCDADocument(String cda) {
     try {
-      // using the JAXB Wrapper voids the requirement for a @XMLRootElement annotation on the domain model objects
-      ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
+      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
+
       JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
-
-      String associatedId = UUID.randomUUID().toString();
-
-      // metadata
-      SubmitObjectsRequest submitRequest = metadataHelper.buildSubmitObjectsRequest(cda, associatedId);
-      request.setSubmitObjectsRequest(submitRequest);
-
-      // document
-      ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
-      document.setId(getDocumentId(submitRequest));
-      document.setValue(cda.getBytes());
-      request.getDocument().add(document);
-
-      // execute
       @SuppressWarnings("unchecked")
       JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new XDSMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+          .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
 
       return result.getValue();
     }
     catch (Throwable t) {
       throw t;
     }
+  }
+
+  protected static ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(String cda) {
+    ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
+
+    // TODO: load home community id from properties
+    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper("").buildFromCDA(cda);
+    request.setSubmitObjectsRequest(submitRequest);
+
+    ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
+    document.setId(getDocumentId(submitRequest));
+    document.setValue(cda.getBytes());
+    request.getDocument().add(document);
+
+    return request;
   }
 
   protected static String getDocumentId(SubmitObjectsRequest request) {

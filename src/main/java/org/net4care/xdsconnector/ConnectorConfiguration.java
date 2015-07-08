@@ -2,7 +2,6 @@ package org.net4care.xdsconnector;
 
 import java.io.File;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,8 +34,8 @@ public class  ConnectorConfiguration {
 	}
 
 	@Bean
-	public XDSRepositoryConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
-		XDSRepositoryConnector client = new XDSRepositoryConnector();
+	public RepositoryConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
+		RepositoryConnector client = new RepositoryConnector();
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
@@ -54,8 +53,8 @@ public class  ConnectorConfiguration {
 	}
 	
 	@Bean
-	public XDSRegistryConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
-		XDSRegistryConnector client = new XDSRegistryConnector();
+	public RegistryConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
+		RegistryConnector client = new RegistryConnector();
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);

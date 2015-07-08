@@ -2,6 +2,7 @@ package org.net4care.xdsconnector;
 
 import static org.junit.Assert.*;
 
+import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
 import org.net4care.xdsconnector.service.*;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -20,9 +21,8 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 
-public class TestMetadataHelper {
+public class TestSubmitObjectsRequestHelper {
 
   private final String xmlns = "xmlns=\"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0\"";
   private final String xmlns6 = "xmlns=\"urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0\" " +
@@ -31,7 +31,7 @@ public class TestMetadataHelper {
       "xmlns:ns4=\"urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0\" " +
       "xmlns:ns5=\"urn:ihe:iti:xds-b:2007\" " +
       "xmlns:ns6=\"urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0\"";
-  private MetadataHelper helper = new MetadataHelper("1.2.3");
+  private SubmitObjectsRequestHelper helper = new SubmitObjectsRequestHelper("1.2.3");
   private ObjectFactory factory = new ObjectFactory();
   private Calendar calender = new GregorianCalendar();
 
@@ -49,22 +49,8 @@ public class TestMetadataHelper {
       List<String> lines = Files.readAllLines(Paths.get(url.toURI()), Charset.forName("UTF-8"));
       String cda = StringUtils.collectionToDelimitedString(lines, "\n");
 
-      // using the JAXB Wrapper voids the requirement for a @XMLRootElement annotation on the domain model objects
-      ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
+      ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda);
       JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
-
-      String associatedId = UUID.randomUUID().toString();
-
-      // metadata
-      SubmitObjectsRequest submitRequest = helper.buildSubmitObjectsRequest(cda, associatedId);
-      request.setSubmitObjectsRequest(submitRequest);
-
-      // document
-      String uniqueId = XDSRepositoryConnector.getDocumentId(submitRequest);
-      ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
-      document.setId(uniqueId);
-      document.setValue(cda.getBytes());
-      request.getDocument().add(document);
 
       String xml = serialize(requestWrapper, request.getClass());
       System.out.println(xml);
@@ -87,6 +73,9 @@ public class TestMetadataHelper {
         "  <Name>\n" +
         "    <LocalizedString value=\"Hjemmemonitorering for 2303439995\"/>\n" +
         "  </Name>\n" +
+        "  <Description>\n" +
+        "    <LocalizedString value=\"Hjemmemonitorering for 2303439995\"/>\n" +
+        "  </Description>\n" +
         "</ExtrinsicObject>";
     assertXMLEqual(control, factory.createExtrinsicObject(extobj));
   }
@@ -286,17 +275,6 @@ public class TestMetadataHelper {
   }
 
   @Test
-  public void createRepositoryUniqueId() {
-    SlotType1 slot = helper.createRepositoryUniqueId("1.3.6.1.4.5");
-    String control = "<Slot name=\"repositoryUniqueId\" " + xmlns + ">\n" +
-        "  <ValueList>\n" +
-        "    <Value>1.3.6.1.4.5</Value>\n" +
-        "  </ValueList>\n" +
-        "</Slot>";
-    assertXMLEqual(control, factory.createSlot(slot));
-  }
-
-  @Test
   public void createServiceStartTime() {
     calender.set(2014, 11, 25, 21, 20, 10);
     SlotType1 slot = helper.createServiceStartTime(calender.getTime());
@@ -315,17 +293,6 @@ public class TestMetadataHelper {
     String control = "<Slot name=\"serviceStopTime\" " + xmlns + ">\n" +
         "  <ValueList>\n" +
         "    <Value>20141225212010</Value>\n" +
-        "  </ValueList>\n" +
-        "</Slot>";
-    assertXMLEqual(control, factory.createSlot(slot));
-  }
-
-  @Test
-  public void createSize() {
-    SlotType1 slot = helper.createSize(3654);
-    String control = "<Slot name=\"size\" " + xmlns + ">\n" +
-        "  <ValueList>\n" +
-        "    <Value>3654</Value>\n" +
         "  </ValueList>\n" +
         "</Slot>";
     assertXMLEqual(control, factory.createSlot(slot));

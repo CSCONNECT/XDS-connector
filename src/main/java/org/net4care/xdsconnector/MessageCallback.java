@@ -9,12 +9,12 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.UUID;
 
-public class XDSMessageCallback implements WebServiceMessageCallback {
+public class MessageCallback implements WebServiceMessageCallback {
 
   private String url;
   private String method;
 
-  public XDSMessageCallback(String url, String method) {
+  public MessageCallback(String url, String method) {
     this.url = url;
     this.method = method;
   }

@@ -21,7 +21,7 @@ import java.util.UUID;
 public class TestXds {
 
   @Autowired
-  XDSRepositoryConnector xdsRepositoryConnector;
+  RepositoryConnector xdsRepositoryConnector;
 
   @Test
   public void retrieveDocumentSet() {

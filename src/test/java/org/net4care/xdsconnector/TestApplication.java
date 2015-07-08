@@ -15,7 +15,7 @@ public class TestApplication {
 		try {
 	        ConfigurableApplicationContext run = SpringApplication.run(TestApplication.class, args);
 	        
-	        XDSRepositoryConnector xdsRepositoryConnector = run.getBean("xdsRepositoryConnector", XDSRepositoryConnector.class);
+	        RepositoryConnector xdsRepositoryConnector = run.getBean("xdsRepositoryConnector", RepositoryConnector.class);
 
 							// external XDS, Microsoft XDS document
 							// RetrieveDocumentSetResponseType document = xdsRepositoryConnector.retrieveDocumentSet("8b3a64f5-4859-4978-b254-70700e339c2e");

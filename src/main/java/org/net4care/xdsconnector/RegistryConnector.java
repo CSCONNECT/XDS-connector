@@ -4,20 +4,17 @@ import java.util.*;
 
 import javax.xml.bind.JAXBElement;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import org.net4care.xdsconnector.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
-public class XDSRegistryConnector extends WebServiceGatewaySupport {
+public class RegistryConnector extends WebServiceGatewaySupport {
 
   @Value("${xds.registryUrl}")
   private String registryUrl;
@@ -84,7 +81,7 @@ public class XDSRegistryConnector extends WebServiceGatewaySupport {
 		// Query the XDS registry
 		@SuppressWarnings("unchecked")
 		JAXBElement<AdhocQueryResponseType> result = (JAXBElement<AdhocQueryResponseType>) getWebServiceTemplate()
-				.marshalSendAndReceive(requestWrapper, new XDSMessageCallback(registryUrl, "RegistryStoredQuery"));
+				.marshalSendAndReceive(requestWrapper, new MessageCallback(registryUrl, "RegistryStoredQuery"));
 
 		return (AdhocQueryResponseType) result.getValue();
 	}

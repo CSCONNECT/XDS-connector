@@ -1,4 +1,4 @@
-package org.net4care.xdsconnector;
+package org.net4care.xdsconnector.Utilities;
 
 import org.net4care.xdsconnector.Constants.COID;
 import org.net4care.xdsconnector.Constants.CUUID;
@@ -10,12 +10,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.*;
 import java.io.ByteArrayInputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.nio.charset.Charset;
 import java.util.*;
 
-public class MetadataHelper {
+public class SubmitObjectsRequestHelper {
   private static SimpleDateFormat xdsDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
   private static ObjectFactory factory = new ObjectFactory();
   private XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -23,7 +22,7 @@ public class MetadataHelper {
 
   private String homeCommunityId;
 
-  public MetadataHelper(String homeCommunityId) {
+  public SubmitObjectsRequestHelper(String homeCommunityId) {
     this.homeCommunityId = homeCommunityId;
   }
 
@@ -31,87 +30,103 @@ public class MetadataHelper {
   // public methods
   //
 
-  public SubmitObjectsRequest buildSubmitObjectsRequest(String xml, String associatedId) {
-    Document cda;
+  public SubmitObjectsRequest buildFromCDA(String xml) {
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      // factory.setNamespaceAware(true);
       DocumentBuilder builder = factory.newDocumentBuilder();
       byte[] bytes = xml.getBytes(Charset.forName("UTF-8"));
-      cda = builder.parse(new ByteArrayInputStream(bytes));
+      Document cda = builder.parse(new ByteArrayInputStream(bytes));
+      return buildFromCDA(cda);
     }
     catch (Exception ex) {
       return null;
     }
+  }
 
-    // Follows XDS metadata specification
-    // XPath code is optimized for readability, not performance
-
-    // ITI Vol3 4.3.1.2.2 SubmitObjectsRequest has
-    //  - SubmissionSet metadata
-    //  - DocumentEntry metadata
-    //  - Folders to be created
-    //  - Associations (various relationships and HasMember as needed)
-    // these aspects are held in a RegistryObjectList
+  public SubmitObjectsRequest buildFromCDA(Document cda) {
+    // TODO: should these be parameterized?
+    String associatedId = UUID.randomUUID().toString();
+    String submissionSetId = UUID.randomUUID().toString();
 
     SubmitObjectsRequest request = new SubmitObjectsRequest();
     RegistryObjectListType registry = factory.createRegistryObjectListType();
     request.setRegistryObjectList(registry);
 
-    // DocumentEntry
-    ExtrinsicObjectType entry = createStableDocumentEntry(cda, associatedId);
-    registry.getIdentifiable().add(factory.createExtrinsicObject(entry));
-
-    // RegistryPackage
-    String submissionSetId = UUID.randomUUID().toString();
-    String submissionSetName = getString(cda, "ClinicalDocument/title");
-    RegistryPackageType registryPackage = createRegistryPackage(cda, submissionSetId, submissionSetName);
-    registry.getIdentifiable().add(factory.createRegistryPackage(registryPackage));
-
-    // Classification
-    ClassificationType classification = createClassificationNode(submissionSetId);
-    registry.getIdentifiable().add(factory.createClassification(classification));
-
-    // Associations
-    AssociationType1 association = createAssociation(submissionSetId, associatedId);
-    registry.getIdentifiable().add(factory.createAssociation(association));
+    addStableDocumentEntry(registry, cda, associatedId);
+    addRegistryPackage(registry, cda, submissionSetId);
+    addClassificationNode(registry, submissionSetId);
+    addAssociation(registry, submissionSetId, associatedId);
 
     return request;
   }
 
-  public ExtrinsicObjectType createStableDocumentEntry(Document cda, String associatedId) {
-    ExtrinsicObjectType documentEntry = createStableDocumentEntryObject(cda, associatedId);
+  public void addStableDocumentEntry(RegistryObjectListType registry, Document cda, String associatedId) {
+    String title = getString(cda, "ClinicalDocument/title");
+    ExtrinsicObjectType documentEntry = createStableDocumentEntryObject(associatedId, title);
 
-    documentEntry.getSlot().add(createLanguageCode(cda));
-    documentEntry.getSlot().add(createCreationTime(cda));
-    documentEntry.getSlot().add(createServiceStartTime(cda));
-    documentEntry.getSlot().add(createServiceStopTime(cda));
-    documentEntry.getSlot().add(createPatientId(cda));
-    documentEntry.getSlot().add(createSourcePatientId(cda));
-    documentEntry.getSlot().add(createSourcePatientInfo(cda));
-    // SlotType1 legalAuthenticator = createLegalAuthenticator(cda);
-    // if (legalAuthenticator != null) documentEntry.getSlot().add(legalAuthenticator);
+    addLanguageCode(documentEntry, cda);
+    addCreationTime(documentEntry, cda);
+    addServiceStartTime(documentEntry, cda);
+    addServiceStopTime(documentEntry, cda);
+    addPatientId(documentEntry, cda);
+    addSourcePatientId(documentEntry, cda);
+    addSourcePatientInfo(documentEntry, cda);
+    addLegalAuthenticator(documentEntry, cda);
 
     // TODO: determine format code from template id, using PHMR for now
-    documentEntry.getClassification().add(createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName));
-    documentEntry.getClassification().add(createClassCode(associatedId));
-    documentEntry.getClassification().add(createTypeCode(cda, associatedId));
-    documentEntry.getClassification().add(createConfidentialityCode(cda, associatedId));
-    documentEntry.getClassification().add(createHealthcareFacilityTypeCode(cda, associatedId));
-    documentEntry.getClassification().add(createPracticeSettingCode(associatedId));
-    documentEntry.getClassification().addAll(createEventCodeList(cda, associatedId));
+    addFormatCode(documentEntry, associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
+    addClassCode(documentEntry, associatedId);
+    addTypeCode(documentEntry, cda, associatedId);
+    addConfidentialityCode(documentEntry, cda, associatedId);
+    addHealthcareFacilityTypeCode(documentEntry, cda, associatedId);
+    addPracticeSettingCode(documentEntry, associatedId);
+    addEventCodeList(documentEntry, cda, associatedId);
 
-    documentEntry.getExternalIdentifier().add(createDocumentEntryUniqueId(cda, associatedId));
-    documentEntry.getExternalIdentifier().add(createDocumentEntryPatientId(cda, associatedId));
+    addDocumentEntryUniqueId(documentEntry, cda, associatedId);
+    addDocumentEntryPatientId(documentEntry, cda, associatedId);
 
-    return documentEntry;
+    registry.getIdentifiable().add(factory.createExtrinsicObject(documentEntry));
   }
 
-  public ExtrinsicObjectType createStableDocumentEntryObject(Document cda, String associatedId) {
+  public void addRegistryPackage(RegistryObjectListType registry, Document cda, String submissionSetId) {
     String title = getString(cda, "ClinicalDocument/title");
-    return createStableDocumentEntryObject(associatedId, title);
+    RegistryPackageType registryPackage = factory.createRegistryPackageType();
+
+    registryPackage.setId(submissionSetId);
+    registryPackage.setName(createInternationalString(title));
+
+    addSubmissionTime(registryPackage);
+
+    addAuthor(registryPackage, cda, submissionSetId);
+    addContentTypeCode(registryPackage, submissionSetId);
+
+    addSubmissionSetUniqueId(registryPackage, cda, submissionSetId);
+    addSubmissionSetPatientId(registryPackage, cda, submissionSetId);
+    addSourceId(registryPackage, submissionSetId);
+
+    registry.getIdentifiable().add(factory.createRegistryPackage(registryPackage));
   }
 
+  public void addClassificationNode(RegistryObjectListType registry, String submissionSetId) {
+    ClassificationType classification = factory.createClassificationType();
+    classification.setObjectType("urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification");
+    classification.setId(java.util.UUID.randomUUID().toString());
+    classification.setClassifiedObject(submissionSetId);
+    classification.setClassificationNode(CUUID.SubmissionSet.classificationNode);
+    registry.getIdentifiable().add(factory.createClassification(classification));
+  }
+
+  public void addAssociation(RegistryObjectListType registry, String sourceId, String targetId) {
+    AssociationType1 association = factory.createAssociationType1();
+    association.setAssociationType("HasMember");
+    association.setId(UUID.randomUUID().toString());
+    association.setSourceObject(sourceId);
+    association.setTargetObject(targetId);
+    association.getSlot().add(createSlot("SubmissionSetStatus","Original"));
+    registry.getIdentifiable().add(factory.createAssociation(association));
+  }
+
+  // 2.2.2, 8, 13, 18, 19, & 31
   public ExtrinsicObjectType createStableDocumentEntryObject(String associatedId, String title) {
     ExtrinsicObjectType extobj = factory.createExtrinsicObjectType();
     extobj.setObjectType(CUUID.DocumentEntry.stableDocument);
@@ -124,34 +139,20 @@ public class MetadataHelper {
     return extobj;
   }
 
-  public RegistryPackageType createRegistryPackage(Document cda, String submissionSetId, String submissionSetName) {
-    RegistryPackageType registryPackage = factory.createRegistryPackageType();
-
-    registryPackage.setId(submissionSetId);
-    registryPackage.setName(createInternationalString(submissionSetName));
-
-    registryPackage.getSlot().add(createSubmissionTime());
-
+  // 2.2.1 author, mandatory
+  public void addAuthor(RegistryPackageType registryPackage, Document cda, String submissionSetId) {
     ClassificationType authorClassification = createClassification(CUUID.SubmissionSet.authorId, submissionSetId, null, null);
-    authorClassification.getSlot().add(createAuthorInstitution(cda));
-    authorClassification.getSlot().add(createAuthorPerson(cda));
+    addAuthorInstitution(authorClassification, cda);
+    addAuthorPerson(authorClassification, cda);
     registryPackage.getClassification().add(authorClassification);
-
-    registryPackage.getClassification().add(createContentTypeCode(submissionSetId));
-
-    registryPackage.getExternalIdentifier().add(createSubmissionSetUniqueId(cda, submissionSetId));
-    registryPackage.getExternalIdentifier().add(createSubmissionSetPatientId(cda, submissionSetId));
-    registryPackage.getExternalIdentifier().add(createSourceId(submissionSetId));
-
-    return registryPackage;
   }
 
   // 2.2.1.1 authorInstitution, mandatory
-  public SlotType1 createAuthorInstitution(Document cda) {
+  public void addAuthorInstitution(ClassificationType classification, Document cda) {
     String organizationName = getString(cda, "ClinicalDocument/author/assignedAuthor/representedOrganization/name");
     String authorCodeSystem = getString(cda, "ClinicalDocument/author/assignedAuthor/id/@root");
     String authorCode = getString(cda, "ClinicalDocument/author/assignedAuthor/id/@extension");
-    return createAuthorInstitution(organizationName, authorCode, authorCodeSystem);
+    classification.getSlot().add(createAuthorInstitution(organizationName, authorCode, authorCodeSystem));
   }
 
   public SlotType1 createAuthorInstitution(String displayName, String code, String codeSystem) {
@@ -160,11 +161,11 @@ public class MetadataHelper {
   }
 
   // 2.2.1.2 authorPerson, mandatory
-  public SlotType1 createAuthorPerson(Document cda) {
+  public void addAuthorPerson(ClassificationType classification, Document cda) {
     String authorLastName = getString(cda, "ClinicalDocument/author/assignedAuthor/assignedPerson/name/family");
     List<String> authorGivenNames = getStrings(cda, "ClinicalDocument/author/assignedAuthor/assignedPerson/name/given");
     String authorFirstName = (authorGivenNames.size() > 0) ? authorGivenNames.remove(0) : "";
-    return createAuthorPerson(authorLastName, authorFirstName, authorGivenNames.toArray(new String[0]));
+    classification.getSlot().add(createAuthorPerson(authorLastName, authorFirstName, authorGivenNames.toArray(new String[0])));
   }
 
   public SlotType1 createAuthorPerson(String lastName, String firstName, String... middleNames) {
@@ -177,6 +178,10 @@ public class MetadataHelper {
   // part of createStableDocumentEntryObject
 
   // 2.2.3 classCode, mandatory
+  public void addClassCode(ExtrinsicObjectType documentEntry, String associatedId) {
+    documentEntry.getClassification().add(createClassCode(associatedId));
+  }
+
   public ClassificationType createClassCode(String associatedId) {
     // Allways clinical report
     return createClassification(CUUID.DocumentEntry.classCode, associatedId, COID.DK.ClassCode_ClinicalReport_Code, COID.DK.ClassCode_ClinicalReport_DisplayName, COID.DK.ClassCode);
@@ -185,9 +190,9 @@ public class MetadataHelper {
   // 2.2.4 comments, not used
 
   // 2.2.5 confidentialityCode, mandatory
-  public ClassificationType createConfidentialityCode(Document cda, String associatedId) {
+  public void addConfidentialityCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     String confidentialityCode = getString(cda, "ClinicalDocument/confidentialityCode/@code");
-    return createConfidentialityCode(associatedId, confidentialityCode);
+    documentEntry.getClassification().add(createConfidentialityCode(associatedId, confidentialityCode));
   }
 
   public ClassificationType createConfidentialityCode(String associatedId, String valueId) {
@@ -197,15 +202,19 @@ public class MetadataHelper {
   }
 
   // 2.2.6 contentTypeCode, not used
+  public void addContentTypeCode(RegistryPackageType registryPackage, String submissionSetId) {
+    registryPackage.getClassification().add(createContentTypeCode(submissionSetId));
+  }
+
   public ClassificationType createContentTypeCode(String submissionSetId) {
     // unused, but required, inserting empty values
     return createClassification(CUUID.SubmissionSet.contentTypeCode, submissionSetId, "", "", "");
   }
 
   // 2.2.7 creationTime, mandatory
-  public SlotType1 createCreationTime(Document cda) {
+  public void addCreationTime(ExtrinsicObjectType documentEntry, Document cda) {
     String creationTime = getString(cda, "ClinicalDocument/effectiveTime/@value");
-    return createCreationTime(creationTime);
+    documentEntry.getSlot().add(createCreationTime(creationTime));
   }
 
   public SlotType1 createCreationTime(Date creationTime) {
@@ -220,7 +229,7 @@ public class MetadataHelper {
   // part of createStableDocumentEntryObject
 
   // 2.2.9 eventCodeList, required when known
-  public List<ClassificationType> createEventCodeList(Document cda, String associatedId) {
+  public void addEventCodeList(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     List<String> eventCodes = getStrings(cda, "ClinicalDocument/documentationOf/serviceEvent/code/@code");
     List<String> eventNames = getStrings(cda, "ClinicalDocument/documentationOf/serviceEvent/code/@displayName");
     List<String> eventCodeSystems = getStrings(cda, "ClinicalDocument/documentationOf/serviceEvent/code/@codeSystem");
@@ -230,7 +239,7 @@ public class MetadataHelper {
     for (int i=0; i<eventSize; i++) {
       list.add(createEventCodeList(associatedId, eventCodeSystems.get(i), eventCodes.get(i), eventNames.get(i)));
     }
-    return list;
+    documentEntry.getClassification().addAll(list);
   }
 
   public ClassificationType createEventCodeList(String associatedId, String eventCodeSystem, String eventCode, String eventName) {
@@ -238,22 +247,24 @@ public class MetadataHelper {
   }
 
   // 2.2.10 formatCode, mandatory
+  public void addFormatCode(ExtrinsicObjectType documentEntry, String associatedId, String code, String displayName) {
+    documentEntry.getClassification().add(createFormatCode(associatedId, code, displayName));
+  }
+
   public ClassificationType createFormatCode(String associatedId, String code, String displayName) {
     return createClassification(CUUID.DocumentEntry.formatCode, associatedId, code, displayName, COID.DK.FormatCode);
   }
 
   // 2.2.11 hash, mandatory
-  public SlotType1 createHash(byte[] bytes) {
-    return createSlot("hash", Integer.toString(bytes.hashCode()));
-  }
+  // added by repository
 
   // 2.2.12 healthcareFacilityTypeCode, mandatory
-  public ClassificationType createHealthcareFacilityTypeCode(Document cda, String associatedId) {
-    // TODO: info not in CDA, locked to hospital for now?
+  public void addHealthcareFacilityTypeCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
+    // TODO: info not in CDA, locked to hospital for now
     String facilityCodeSystem = "2.16.840.1.113883.3.4208.100.11";
     String facilityCode = "22232009";
     String facilityName = healthcareFacilityTypeCode2DisplayName(facilityCode);
-    return createHealthcareFacilityTypeCode(associatedId, facilityCodeSystem, facilityCode, facilityName);
+    documentEntry.getClassification().add(createHealthcareFacilityTypeCode(associatedId, facilityCodeSystem, facilityCode, facilityName));
   }
 
   public ClassificationType createHealthcareFacilityTypeCode(String associatedId, String facilityCode, String facilityId, String facilityName) {
@@ -266,9 +277,9 @@ public class MetadataHelper {
   // 2.2.14 intendedRecepient, not used
 
   // 2.2.15 launguageCode, mandatory
-  public SlotType1 createLanguageCode(Document cda) {
+  public void addLanguageCode(ExtrinsicObjectType documentEntry, Document cda) {
     String languageCode = getString(cda, "ClinicalDocument/languageCode/@code");
-    return createLanguageCode(languageCode);
+    documentEntry.getSlot().add(createLanguageCode(languageCode));
   }
 
   public SlotType1 createLanguageCode(String languageCode) {
@@ -276,14 +287,13 @@ public class MetadataHelper {
   }
 
   // 2.2.16 legalAuthenticator, required when known
-  public SlotType1 createLegalAuthenticator(Document cda) {
+  public void addLegalAuthenticator(ExtrinsicObjectType documentEntry, Document cda) {
     String legalLastName = getString(cda, "ClinicalDocument/legalAuthenticator/assignedEntity/assignedPerson/name/family");
     List<String> legalGivenNames = getStrings(cda, "ClinicalDocument/legalAuthenticator/assignedEntity/assignedPerson/name/given");
     String legalFirstName = (legalGivenNames.size() > 0) ? legalGivenNames.remove(0) : "";
     if (legalLastName.length() > 0 || legalFirstName.length() > 0 || legalGivenNames.size() > 0) {
-      return createLegalAuthenticator(legalLastName, legalFirstName, (String[]) legalGivenNames.toArray());
+      documentEntry.getSlot().add(createLegalAuthenticator(legalLastName, legalFirstName, (String[]) legalGivenNames.toArray(new String[0])));
     }
-    else return null;
   }
 
   public SlotType1 createLegalAuthenticator(String lastName, String firstName, String... middleNames) {
@@ -300,10 +310,10 @@ public class MetadataHelper {
   // part of createStableDocumentEntryObject
 
   // 2.2.20 patientId, mandatory
-  public SlotType1 createPatientId(Document cda) {
+  public void addPatientId(ExtrinsicObjectType documentEntry, Document cda) {
     String patientId = getString(cda, "ClinicalDocument/recordTarget/patientRole/id/@extension");
     String patientCodeSystem = getString(cda, "ClinicalDocument/recordTarget/patientRole/id/@root");
-    return createPatientId(patientCodeSystem, patientId);
+    documentEntry.getSlot().add(createPatientId(patientCodeSystem, patientId));
   }
 
   public SlotType1 createPatientId(String patientCodeSystem, String patientId) {
@@ -311,27 +321,25 @@ public class MetadataHelper {
     return createSlot("patientId", value);
   }
 
-  public ExternalIdentifierType createDocumentEntryPatientId(Document cda, String associatedId) {
+  public void addDocumentEntryPatientId(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     String patientId = getString(cda, "ClinicalDocument/recordTarget/patientRole/id/@extension");
     String patientCodeSystem = getString(cda, "ClinicalDocument/recordTarget/patientRole/id/@root");
-    return createDocumentEntryPatientId(associatedId, patientCodeSystem, patientId);
+    documentEntry.getExternalIdentifier().add(createDocumentEntryPatientId(associatedId, patientCodeSystem, patientId));
   }
 
   public ExternalIdentifierType createDocumentEntryPatientId(String associatedId, String patientCodeSystem, String patientId) {
     String value = formatPatientId(patientCodeSystem, patientId);
-    // TODO: using associatedId for registryObject
     return createExternalIdentifier(CUUID.DocumentEntry.patientId, associatedId, "XDSDocumentEntry.patientId", value);
   }
 
-  public ExternalIdentifierType createSubmissionSetPatientId(Document cda, String submissionSetId) {
+  public void addSubmissionSetPatientId(RegistryPackageType registryPackage, Document cda, String submissionSetId) {
     String patientId = getString(cda, "ClinicalDocument/recordTarget/patientRole/id/@extension");
     String patientCodeSystem = getString(cda, "ClinicalDocument/recordTarget/patientRole/id/@root");
-    return createSubmissionSetPatientId(submissionSetId, patientCodeSystem, patientId);
+    registryPackage.getExternalIdentifier().add(createSubmissionSetPatientId(submissionSetId, patientCodeSystem, patientId));
   }
 
   public ExternalIdentifierType createSubmissionSetPatientId(String submissionSetId, String patientCodeSystem, String patientId) {
     String value = formatPatientId(patientCodeSystem, patientId);
-    // TODO: using submissionSetId for registryObject
     return createExternalIdentifier(CUUID.SubmissionSet.patientId, submissionSetId, "XDSSubmissionSet.patientId", value);
   }
 
@@ -346,6 +354,11 @@ public class MetadataHelper {
   }
 
   // 2.2.21 practiceSettingCode, not used
+  public void addPracticeSettingCode(ExtrinsicObjectType documentEntry, String associatedId) {
+    // unused, but required, inserting empty values
+    documentEntry.getClassification().add(createPracticeSettingCode(associatedId));
+  }
+
   public ClassificationType createPracticeSettingCode(String associatedId) {
     // unused, but required, inserting empty values
     return createClassification(CUUID.DocumentEntry.practiceSettingCode, associatedId, "", "", "");
@@ -355,14 +368,12 @@ public class MetadataHelper {
   // TODO: ignored for now
 
   // 2.2.23 repositoryUniqueId, mandatory
-  public SlotType1 createRepositoryUniqueId(String repositoryUniqueId) {
-    return createSlot("repositoryUniqueId", repositoryUniqueId);
-  }
+  // added by repository
 
   // 2.2.24 serviceStartTime, required when known
-  public SlotType1 createServiceStartTime(Document cda) {
+  public void addServiceStartTime(ExtrinsicObjectType documentEntry, Document cda) {
     String serviceStartTime = getString(cda, "ClinicalDocument/documentationOf/serviceEvent/effectiveTime/low/@value");
-    return (serviceStartTime.length() > 0) ? createServiceStartTime(serviceStartTime) : null;
+    if (serviceStartTime.length() > 0) documentEntry.getSlot().add(createServiceStartTime(serviceStartTime));
   }
 
   public SlotType1 createServiceStartTime(Date serviceStartTime) {
@@ -374,9 +385,9 @@ public class MetadataHelper {
   }
 
   // 2.2.25 serviceStopTime, required when known
-  public SlotType1 createServiceStopTime(Document cda) {
+  public void addServiceStopTime(ExtrinsicObjectType documentEntry, Document cda) {
     String serviceStopTime = getString(cda, "ClinicalDocument/documentationOf/serviceEvent/effectiveTime/high/@value");
-    return (serviceStopTime.length() > 0) ? createServiceStopTime(serviceStopTime) : null;
+    if (serviceStopTime.length() > 0) documentEntry.getSlot().add(createServiceStopTime(serviceStopTime));
   }
 
   public SlotType1 createServiceStopTime(Date serviceStopTime) {
@@ -388,20 +399,21 @@ public class MetadataHelper {
   }
 
   // 2.2.26 size, mandatory
-  public SlotType1 createSize(int size) {
-    return createSlot("size", Integer.toString(size));
-  }
+  // added by repository
 
   // 2.2.27 sourceId, not used
+  public void addSourceId(RegistryPackageType registryPackage, String submissionSetId) {
+    registryPackage.getExternalIdentifier().add(createSourceId(submissionSetId));
+  }
+
   public ExternalIdentifierType createSourceId(String submissionSetId) {
-    // TODO: using submissionSetId for registryObject
     return createExternalIdentifier(CUUID.SubmissionSet.sourceId, submissionSetId, "XDSSubmissionSet.sourceId", UUID.randomUUID().toString());
   }
 
   // 2.2.28 sourcePatientId, mandatory
-  public SlotType1 createSourcePatientId(Document cda) {
+  public void addSourcePatientId(ExtrinsicObjectType documentEntry, Document cda) {
     String value = formatPatientId(cda);
-    return createSlot("sourcePatientId", value);
+    documentEntry.getSlot().add(createSlot("sourcePatientId", value));
   }
 
   public SlotType1 createSourcePatientId(String patientCodeSystem, String patientId) {
@@ -410,13 +422,13 @@ public class MetadataHelper {
   }
 
   // 2.2.29 sourcePatientInfo, mandatory
-  public SlotType1 createSourcePatientInfo(Document cda) {
+  public void addSourcePatientInfo(ExtrinsicObjectType documentEntry, Document cda) {
     String patientLastName = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/name/family");
     List<String> patientGivenNames = getStrings(cda, "ClinicalDocument/recordTarget/patientRole/patient/name/given");
     String patientFirstName = (patientGivenNames.size() > 0) ? patientGivenNames.remove(0) : "";
     String patientBirthTime = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/birthTime/@value");
     String patientGender = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/administrativeGenderCode/@code");
-    return createSourcePatientInfo(patientBirthTime, patientGender, patientLastName, patientFirstName, patientGivenNames.toArray(new String[0]));
+    documentEntry.getSlot().add(createSourcePatientInfo(patientBirthTime, patientGender, patientLastName, patientFirstName, patientGivenNames.toArray(new String[0])));
   }
 
   public SlotType1 createSourcePatientInfo(String patientBirthTime, String patientGender, String patientLastName, String patientFirstName, String... patientMiddleNames) {
@@ -426,9 +438,9 @@ public class MetadataHelper {
   }
 
   // 2.2.30 submissionTime, mandatory
-  public SlotType1 createSubmissionTime() {
+  public void addSubmissionTime(RegistryPackageType registryPackage) {
     String submissionTime = xdsDateFormat.format(new Date());
-    return createSubmissionTime(submissionTime);
+    registryPackage.getSlot().add(createSubmissionTime(submissionTime));
   }
 
   public SlotType1 createSubmissionTime(Date submissionTime) {
@@ -443,11 +455,11 @@ public class MetadataHelper {
   // part of createStableDocumentEntryObject
 
   // 2.2.32 typeCode, mandatory
-  public ClassificationType createTypeCode(Document cda, String associatedId) {
+  public void addTypeCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     String typeCode = getString(cda, "ClinicalDocument/code/@code");
     String typeName = getString(cda, "ClinicalDocument/code/@displayName");
     String typeSystem = getString(cda, "ClinicalDocument/code/@codeSystem");
-    return createTypeCode(associatedId, typeSystem, typeCode, typeName);
+    documentEntry.getClassification().add(createTypeCode(associatedId, typeSystem, typeCode, typeName));
   }
 
   public ClassificationType createTypeCode(String associatedId, String typeSystem, String typeCode, String typeName) {
@@ -455,27 +467,25 @@ public class MetadataHelper {
   }
 
   // 2.2.33 uniqueId, mandatory
-  public ExternalIdentifierType createDocumentEntryUniqueId(Document cda, String associatedId) {
+  public void addDocumentEntryUniqueId(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     String root = getString(cda, "ClinicalDocument/id/@root");
     String extension = getString(cda, "ClinicalDocument/id/@extension");
-    return createDocumentEntryUniqueId(associatedId, root, extension);
+    documentEntry.getExternalIdentifier().add(createDocumentEntryUniqueId(associatedId, root, extension));
   }
 
   public ExternalIdentifierType createDocumentEntryUniqueId(String associatedId, String root, String extension) {
     String value = formatUniqueId(root, extension);
-    // TODO: using associatedId for registryObject
     return createExternalIdentifier(CUUID.DocumentEntry.uniqueId, associatedId, "XDSDocumentEntry.uniqueId", value);
   }
 
-  public ExternalIdentifierType createSubmissionSetUniqueId(Document cda, String associatedId) {
+  public void addSubmissionSetUniqueId(RegistryPackageType registryPackage, Document cda, String associatedId) {
     String root = getString(cda, "ClinicalDocument/id/@root");
     String extension = getString(cda, "ClinicalDocument/id/@extension");
-    return createSubmissionSetUniqueId(associatedId, root, extension);
+    registryPackage.getExternalIdentifier().add(createSubmissionSetUniqueId(associatedId, root, extension));
   }
 
   public ExternalIdentifierType createSubmissionSetUniqueId(String associatedId, String root, String extension) {
     String value = formatUniqueId(root, extension);
-    // TODO: using associatedId for registryObject
     return createExternalIdentifier(CUUID.SubmissionSet.uniqueId, associatedId, "XDSSubmissionSet.uniqueId", value);
   }
 
@@ -488,26 +498,6 @@ public class MetadataHelper {
   public String formatUniqueId(String root, String extension) {
     return String.format("%s^%s", root, extension);
   }
-
-  public ClassificationType createClassificationNode(String submissionSetId) {
-    ClassificationType classification = factory.createClassificationType();
-    classification.setObjectType("urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification");
-    classification.setId(java.util.UUID.randomUUID().toString());
-    classification.setClassifiedObject(submissionSetId);
-    classification.setClassificationNode(CUUID.SubmissionSet.classificationNode);
-    return classification;
-  }
-
-  public AssociationType1 createAssociation(String sourceId, String targetId) {
-    AssociationType1 association = factory.createAssociationType1();
-    association.setAssociationType("HasMember");
-    association.setId(UUID.randomUUID().toString());
-    association.setSourceObject(sourceId);
-    association.setTargetObject(targetId);
-    association.getSlot().add(createSlot("SubmissionSetStatus","Original"));
-    return association;
-  }
-
 
   //
   // private methods
