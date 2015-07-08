@@ -48,6 +48,8 @@ public class  ConnectorConfiguration {
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
 
+		// marshaller.setMtomEnabled(true);
+
 		return client;
 	}
 	

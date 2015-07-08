@@ -36,5 +36,4 @@ public class XDSMessageCallback implements WebServiceMessageCallback {
         .addHeaderElement(new QName("http://www.w3.org/2005/08/addressing", "MessageID", "wsa"))
         .setText("urn:uuid:" + uuid.toString());
   }
-
 }
