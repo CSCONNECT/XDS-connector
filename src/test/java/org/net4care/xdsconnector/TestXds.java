@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration("classpath:applicationContext-test.xml")
 @ContextConfiguration(classes = ConnectorConfiguration.class)
 public class TestXds {
 

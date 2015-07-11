@@ -94,16 +94,17 @@
     </dependency>
 
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+    </dependency>
+
+    <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
       <version>1.6</version>
     </dependency>
 
-    <!--dependency>
-      <groupId>org.net4care</groupId>
-      <artifactId>CONNECTCommonTypesLib</artifactId>
-      <version>4.2.1</version>
-    </dependency-->
   </dependencies>
 
   <repositories>
@@ -112,11 +113,6 @@
       <name>Spring Framework</name>
       <url>http://repo.spring.io/release/</url>
     </repository>
-    <!--repository>
-      <id>net4care-twiga-cs</id>
-      <name>Twiga - official CS</name>
-      <url>http://twiga.cs.au.dk:8081/artifactory/libs-release-net4care</url>
-    </repository-->
   </repositories>
 
   <pluginRepositories>

@@ -13,7 +13,7 @@ import org.springframework.ws.soap.axiom.AxiomSoapMessageFactory;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
-public class  ConnectorConfiguration {
+public class ConnectorConfiguration {
 
   @Value("${xds.repositoryUrl}")
 	private String repositoryUrl;

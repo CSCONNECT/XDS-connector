@@ -1,6 +1,12 @@
 package org.net4care.xdsconnector;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
 import org.net4care.xdsconnector.service.*;
@@ -11,16 +17,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
 public class RepositoryConnector extends WebServiceGatewaySupport {
 
+  @Value("${xds.repositoryUrl}")
+  private String repositoryUrl;
+
   @Value("${xds.repositoryId}")
   private String repositoryId;
 
-  @Value("${xds.repositoryUrl}")
-  private String repositoryUrl;
+  @Value("${xds.homeCommunityId}")
+  private String homeCommunityId;
 
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -49,11 +65,11 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
 	}
 
-  public RegistryResponseType provideAndRegisterCDADocument(String cda) {
+  public RegistryResponseType provideAndRegisterCDADocument(Document cda) {
     try {
       ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
-
       JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
+
       @SuppressWarnings("unchecked")
       JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
           .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
@@ -65,16 +81,63 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
   }
 
-  protected static ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(String cda) {
+  public RegistryResponseType provideAndRegisterCDADocument(String cda) {
+    try {
+      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
+      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
+
+      @SuppressWarnings("unchecked")
+      JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
+          .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+
+      return result.getValue();
+    }
+    catch (Throwable t) {
+      throw t;
+    }
+  }
+
+  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(Document cdaDocument) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
-    // TODO: load home community id from properties
-    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper("").buildFromCDA(cda);
+    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(homeCommunityId).buildFromCDA(cdaDocument);
+    request.setSubmitObjectsRequest(submitRequest);
+
+    ByteArrayOutputStream writer = new ByteArrayOutputStream();
+    try {
+      Marshaller marshaller = JAXBContext.newInstance(cdaDocument.getClass()).createMarshaller();
+      marshaller.marshal(cdaDocument, writer);
+    }
+    catch (Exception ex) {
+      // TODO: log this
+    }
+
+    ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
+    document.setId(getDocumentId(submitRequest));
+    document.setValue(writer.toByteArray());
+    request.getDocument().add(document);
+
+    return request;
+  }
+
+  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(String cdaString) {
+    ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
+
+    Document cdaDocument = null;
+    byte[] bytes = cdaString.getBytes(Charset.forName("UTF-8"));
+    try {
+      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
+    }
+    catch (Exception ex) {
+      // TODO: log this
+    }
+    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(homeCommunityId).buildFromCDA(cdaDocument);
     request.setSubmitObjectsRequest(submitRequest);
 
     ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
     document.setId(getDocumentId(submitRequest));
-    document.setValue(cda.getBytes());
+    document.setValue(bytes);
     request.getDocument().add(document);
 
     return request;

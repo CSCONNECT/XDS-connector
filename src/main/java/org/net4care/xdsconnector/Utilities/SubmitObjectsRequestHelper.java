@@ -3,15 +3,12 @@ package org.net4care.xdsconnector.Utilities;
 import org.net4care.xdsconnector.Constants.COID;
 import org.net4care.xdsconnector.Constants.CUUID;
 import org.net4care.xdsconnector.service.*;
+import org.net4care.xdsconnector.service.ObjectFactory;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.*;
-import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
-import java.nio.charset.Charset;
 import java.util.*;
 
 public class SubmitObjectsRequestHelper {
@@ -30,21 +27,9 @@ public class SubmitObjectsRequestHelper {
   // public methods
   //
 
-  public SubmitObjectsRequest buildFromCDA(String xml) {
-    try {
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      byte[] bytes = xml.getBytes(Charset.forName("UTF-8"));
-      Document cda = builder.parse(new ByteArrayInputStream(bytes));
-      return buildFromCDA(cda);
-    }
-    catch (Exception ex) {
-      return null;
-    }
-  }
-
   public SubmitObjectsRequest buildFromCDA(Document cda) {
     // TODO: should these be parameterized?
+
     String associatedId = UUID.randomUUID().toString();
     String submissionSetId = UUID.randomUUID().toString();
 
@@ -73,8 +58,7 @@ public class SubmitObjectsRequestHelper {
     addSourcePatientInfo(documentEntry, cda);
     addLegalAuthenticator(documentEntry, cda);
 
-    // TODO: determine format code from template id, using PHMR for now
-    addFormatCode(documentEntry, associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
+    addFormatCode(documentEntry, cda, associatedId);
     addClassCode(documentEntry, associatedId);
     addTypeCode(documentEntry, cda, associatedId);
     addConfidentialityCode(documentEntry, cda, associatedId);
@@ -247,8 +231,27 @@ public class SubmitObjectsRequestHelper {
   }
 
   // 2.2.10 formatCode, mandatory
-  public void addFormatCode(ExtrinsicObjectType documentEntry, String associatedId, String code, String displayName) {
-    documentEntry.getClassification().add(createFormatCode(associatedId, code, displayName));
+  public void addFormatCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
+    ClassificationType classification = null;
+    String templateId = getString(cda, "ClinicalDocument/templateId/@root");
+    switch (templateId) {
+      case "1.2.208.184.11.1":
+        classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
+        break;
+      case "1.2.208.184.13.1":
+        // TODO: get QRD format code, handle multiple template ids
+        // classification = createFormatCode(associatedId, COID.DK.FormatCode_QRD_Code, COID.DK.FormatCode_QRD_DisplayName);
+        break;
+      case "2.16.840.1.113883.10.20.32":
+        // TODO: get QFDD format code, handle multiple template ids
+        // classification = createFormatCode(associatedId, COID.DK.FormatCode_QFDD_Code, COID.DK.FormatCode_QFDD_DisplayName);
+        break;
+      default:
+        // TODO: get generic CDA format code, handle multiple template ids
+        // classification = createFormatCode(associatedId, COID.DK.FormatCode_CDA_Code, COID.DK.FormatCode_CDA_DisplayName);
+        break;
+    }
+    if (classification != null) documentEntry.getClassification().add(classification);
   }
 
   public ClassificationType createFormatCode(String associatedId, String code, String displayName) {
