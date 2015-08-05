@@ -1,4 +1,4 @@
-package org.net4care.xdsconnector;
+package org.net4care.xdsconnector.Utilities;
 
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.client.core.WebServiceMessageCallback;

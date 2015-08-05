@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.xml.bind.JAXBElement;
 
+import org.net4care.xdsconnector.Utilities.MessageCallback;
 import org.net4care.xdsconnector.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

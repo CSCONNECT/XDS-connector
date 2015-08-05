@@ -30,6 +30,7 @@ public class ConnectorConfiguration {
 	public Jaxb2Marshaller marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
 		marshaller.setContextPath("org.net4care.xdsconnector.service");
+		// marshaller.setMtomEnabled(true);
 		return marshaller;
 	}
 
@@ -46,8 +47,6 @@ public class ConnectorConfiguration {
 		client.setDefaultUri(repositoryUrl);
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
-
-		// marshaller.setMtomEnabled(true);
 
 		return client;
 	}
