@@ -29,8 +29,8 @@ public class ConnectorConfiguration {
 	@Bean
 	public Jaxb2Marshaller marshaller() {
 		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+		marshaller.setMtomEnabled(true);
 		marshaller.setContextPath("org.net4care.xdsconnector.service");
-		// marshaller.setMtomEnabled(true);
 		return marshaller;
 	}
 
@@ -40,9 +40,8 @@ public class ConnectorConfiguration {
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
-    String tmpdir = System.getProperty("java.io.tmpdir");
-		mf.setAttachmentCacheDir(new File(tmpdir));
-		
+		mf.setAttachmentCacheDir(new File(System.getProperty("java.io.tmpdir")));
+
 		client.setMessageFactory(mf);
 		client.setDefaultUri(repositoryUrl);
 		client.setMarshaller(marshaller);
@@ -57,8 +56,7 @@ public class ConnectorConfiguration {
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
-    String tmpdir = System.getProperty("java.io.tmpdir");
-		mf.setAttachmentCacheDir(new File(tmpdir));
+		mf.setAttachmentCacheDir(new File(System.getProperty("java.io.tmpdir")));
 		
 		client.setMessageFactory(mf);
 		client.setDefaultUri(registryUrl);
