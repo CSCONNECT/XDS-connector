@@ -303,7 +303,7 @@ public class TestSubmitObjectsRequestHelper {
     SlotType1 slot = helper.createSourcePatientId("2.16.840.1.113883.3.4208.100.2", "2512484916");
     String control = "<Slot name=\"sourcePatientId\" " + xmlns + ">\n" +
         "  <ValueList>\n" +
-        "    <Value>2512484916^^^&amp;2.16.840.1.113883.3.4208.100.2&amp;ISO</Value>\n" +
+        "    <Value>PID-3|2512484916^^^&amp;2.16.840.1.113883.3.4208.100.2&amp;ISO</Value>\n" +
         "  </ValueList>\n" +
         "</Slot>";
     assertXMLEqual(control, factory.createSlot(slot));
@@ -348,7 +348,8 @@ public class TestSubmitObjectsRequestHelper {
     ExternalIdentifierType extid = helper.createDocumentEntryUniqueId("DocumentEntry01", "2.16.840.1.113883.3.4208", "aa2386d0-79ea-11e3-981f-0800200c9a66");
     String control = "<ExternalIdentifier\n" +
         "  identificationScheme=\"urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab\"\n" +
-        "  value=\"2.16.840.1.113883.3.4208^aa2386d0-79ea-11e3-981f-0800200c9a66\" \n" +
+        // TODO: this tests the reduced extension size
+        "  value=\"2.16.840.1.113883.3.4208^aa2386d079ea11e3\" \n" +
         "  id=\"" + extid.getId() +"\"\n" +
         "  objectType=\"urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier\"\n" +
         "  registryObject=\"DocumentEntry01\"\n" +
