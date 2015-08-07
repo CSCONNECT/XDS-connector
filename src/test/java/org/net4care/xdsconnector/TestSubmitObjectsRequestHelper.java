@@ -31,7 +31,7 @@ public class TestSubmitObjectsRequestHelper {
       "xmlns:ns4=\"urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0\" " +
       "xmlns:ns5=\"urn:ihe:iti:xds-b:2007\" " +
       "xmlns:ns6=\"urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0\"";
-  private SubmitObjectsRequestHelper helper = new SubmitObjectsRequestHelper("1.2.3");
+  private SubmitObjectsRequestHelper helper = new SubmitObjectsRequestHelper("1.2.3", "1.2.3");
   private ObjectFactory factory = new ObjectFactory();
   private Calendar calender = new GregorianCalendar();
 
@@ -304,17 +304,6 @@ public class TestSubmitObjectsRequestHelper {
     String control = "<Slot name=\"sourcePatientId\" " + xmlns + ">\n" +
         "  <ValueList>\n" +
         "    <Value>2512484916^^^&amp;2.16.840.1.113883.3.4208.100.2&amp;ISO</Value>\n" +
-        "  </ValueList>\n" +
-        "</Slot>";
-    assertXMLEqual(control, factory.createSlot(slot));
-  }
-
-  @Test
-  public void createSourcePatientInfo() {
-    SlotType1 slot = helper.createSourcePatientInfo("19481225", "F", "Berggren", "Nancy", "Ann");
-    String control = "<Slot name=\"sourcePatientInfo\" " + xmlns + ">\n" +
-        "  <ValueList>\n" +
-        "    <Value>Berggren^Nancy^Ann^^^19481225^F</Value>\n" +
         "  </ValueList>\n" +
         "</Slot>";
     assertXMLEqual(control, factory.createSlot(slot));

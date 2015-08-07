@@ -18,8 +18,10 @@ public class SubmitObjectsRequestHelper {
   private XPath xpath = xpathFactory.newXPath();
 
   private String homeCommunityId;
+  private String repositoryId;
 
-  public SubmitObjectsRequestHelper(String homeCommunityId) {
+  public SubmitObjectsRequestHelper(String repositoryId, String homeCommunityId) {
+    this.repositoryId = repositoryId;
     this.homeCommunityId = homeCommunityId;
   }
 
@@ -53,7 +55,8 @@ public class SubmitObjectsRequestHelper {
     addCreationTime(documentEntry, cda);
     addServiceStartTime(documentEntry, cda);
     addServiceStopTime(documentEntry, cda);
-    addPatientId(documentEntry, cda);
+    // TODO: OpenXDS does not allow patientId
+    //addPatientId(documentEntry, cda);
     addSourcePatientId(documentEntry, cda);
     addSourcePatientInfo(documentEntry, cda);
     addLegalAuthenticator(documentEntry, cda);
@@ -125,7 +128,7 @@ public class SubmitObjectsRequestHelper {
 
   // 2.2.1 author, mandatory
   public void addAuthor(RegistryPackageType registryPackage, Document cda, String submissionSetId) {
-    ClassificationType authorClassification = createClassification(CUUID.SubmissionSet.authorId, submissionSetId, null, null);
+    ClassificationType authorClassification = createClassification(CUUID.SubmissionSet.authorId, submissionSetId, "", null);
     addAuthorInstitution(authorClassification, cda);
     addAuthorPerson(authorClassification, cda);
     registryPackage.getClassification().add(authorClassification);
@@ -409,19 +412,20 @@ public class SubmitObjectsRequestHelper {
     registryPackage.getExternalIdentifier().add(createSourceId(submissionSetId));
   }
 
+  // TODO: not used, but required by XDS, using repositoryId
   public ExternalIdentifierType createSourceId(String submissionSetId) {
-    return createExternalIdentifier(CUUID.SubmissionSet.sourceId, submissionSetId, "XDSSubmissionSet.sourceId", UUID.randomUUID().toString());
+    return createExternalIdentifier(CUUID.SubmissionSet.sourceId, submissionSetId, "XDSSubmissionSet.sourceId", repositoryId);
   }
 
   // 2.2.28 sourcePatientId, mandatory
   public void addSourcePatientId(ExtrinsicObjectType documentEntry, Document cda) {
     String value = formatPatientId(cda);
-    documentEntry.getSlot().add(createSlot("sourcePatientId", value));
+    documentEntry.getSlot().add(createSlot("sourcePatientId", "PID-3|" + value));
   }
 
   public SlotType1 createSourcePatientId(String patientCodeSystem, String patientId) {
     String value = formatPatientId(patientCodeSystem, patientId);
-    return createSlot("sourcePatientId", value);
+    return createSlot("sourcePatientId", "PID-3|" + value);
   }
 
   // 2.2.29 sourcePatientInfo, mandatory
@@ -429,15 +433,15 @@ public class SubmitObjectsRequestHelper {
     String patientLastName = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/name/family");
     List<String> patientGivenNames = getStrings(cda, "ClinicalDocument/recordTarget/patientRole/patient/name/given");
     String patientFirstName = (patientGivenNames.size() > 0) ? patientGivenNames.remove(0) : "";
+    String patientMiddleName = StringUtils.collectionToDelimitedString(patientGivenNames, "&");
     String patientBirthTime = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/birthTime/@value");
     String patientGender = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/administrativeGenderCode/@code");
-    documentEntry.getSlot().add(createSourcePatientInfo(patientBirthTime, patientGender, patientLastName, patientFirstName, patientGivenNames.toArray(new String[0])));
-  }
 
-  public SlotType1 createSourcePatientInfo(String patientBirthTime, String patientGender, String patientLastName, String patientFirstName, String... patientMiddleNames) {
-    String patientMiddleName = StringUtils.arrayToDelimitedString(patientMiddleNames, "&");
-    String value = String.format("%s^%s^%s^^^%s^%s", patientLastName, patientFirstName, patientMiddleName, patientBirthTime.substring(0,8), patientGender);
-    return createSlot("sourcePatientInfo", value);
+    List<String> values = new ArrayList<String>();
+    values.add(String.format("PID-5|%s^%s^%s^^^", patientLastName, patientFirstName, patientMiddleName));
+    values.add(String.format("PID-7|%s", patientBirthTime.substring(0,8)));
+    values.add(String.format("PID-8|%s", patientGender));
+    documentEntry.getSlot().add(createSlot("sourcePatientInfo", values.toArray(new String[0])));
   }
 
   // 2.2.30 submissionTime, mandatory
@@ -488,7 +492,9 @@ public class SubmitObjectsRequestHelper {
   }
 
   public ExternalIdentifierType createSubmissionSetUniqueId(String associatedId, String root, String extension) {
-    String value = formatUniqueId(root, extension);
+    // String value = formatUniqueId(root, extension);
+    // TODO: HACK create unique OID
+    String value = String.format("%s.%d", root, Long.parseLong(extension.replace("-", "").substring(0,15), 16));
     return createExternalIdentifier(CUUID.SubmissionSet.uniqueId, associatedId, "XDSSubmissionSet.uniqueId", value);
   }
 
@@ -499,7 +505,8 @@ public class SubmitObjectsRequestHelper {
   }
 
   public String formatUniqueId(String root, String extension) {
-    return String.format("%s^%s", root, extension);
+    // TODO: HACK, extension may only be 16 characters
+    return String.format("%s^%s", root, extension.replace("-", "").substring(0,16));
   }
 
   //

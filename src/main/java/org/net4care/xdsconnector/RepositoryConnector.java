@@ -97,7 +97,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
   protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(Document cdaDocument) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
-    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(homeCommunityId).buildFromCDA(cdaDocument);
+    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
     request.setSubmitObjectsRequest(submitRequest);
 
     ByteArrayOutputStream writer = new ByteArrayOutputStream();
@@ -129,7 +129,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     catch (Exception ex) {
       // TODO: log this
     }
-    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(homeCommunityId).buildFromCDA(cdaDocument);
+    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
     request.setSubmitObjectsRequest(submitRequest);
 
     ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
