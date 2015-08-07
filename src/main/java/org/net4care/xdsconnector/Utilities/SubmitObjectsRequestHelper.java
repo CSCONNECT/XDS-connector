@@ -56,7 +56,7 @@ public class SubmitObjectsRequestHelper {
     addServiceStartTime(documentEntry, cda);
     addServiceStopTime(documentEntry, cda);
     // TODO: OpenXDS does not allow patientId
-    //addPatientId(documentEntry, cda);
+    // addPatientId(documentEntry, cda);
     addSourcePatientId(documentEntry, cda);
     addSourcePatientInfo(documentEntry, cda);
     addLegalAuthenticator(documentEntry, cda);
@@ -216,6 +216,8 @@ public class SubmitObjectsRequestHelper {
   // part of createStableDocumentEntryObject
 
   // 2.2.9 eventCodeList, required when known
+  // TODO: this is as specified in the Danish XDS metadata profile, but it is not correct CDA.
+  // The code element is defined to be a CE CWE string with ActCode.
   public void addEventCodeList(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     List<String> eventCodes = getStrings(cda, "ClinicalDocument/documentationOf/serviceEvent/code/@code");
     List<String> eventNames = getStrings(cda, "ClinicalDocument/documentationOf/serviceEvent/code/@displayName");
@@ -266,7 +268,7 @@ public class SubmitObjectsRequestHelper {
 
   // 2.2.12 healthcareFacilityTypeCode, mandatory
   public void addHealthcareFacilityTypeCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
-    // TODO: info not in CDA, locked to hospital for now
+    // TODO: info not in CDA, locked to hospital for now. Should be configurable or parametrized.
     String facilityCodeSystem = "2.16.840.1.113883.3.4208.100.11";
     String facilityCode = "22232009";
     String facilityName = healthcareFacilityTypeCode2DisplayName(facilityCode);
