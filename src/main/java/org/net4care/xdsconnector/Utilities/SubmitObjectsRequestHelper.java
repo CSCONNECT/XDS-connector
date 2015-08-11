@@ -243,6 +243,10 @@ public class SubmitObjectsRequestHelper {
       case "1.2.208.184.11.1":
         classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
         break;
+      case "2.16.840.1.113883.3.4208.11.1":
+        // TODO: remove, added to support the old OID's
+        classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
+        break;
       case "1.2.208.184.13.1":
         // TODO: get QRD format code, handle multiple template ids
         // classification = createFormatCode(associatedId, COID.DK.FormatCode_QRD_Code, COID.DK.FormatCode_QRD_DisplayName);
