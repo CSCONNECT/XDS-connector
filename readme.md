@@ -29,25 +29,37 @@ The repository connector offers the following methods:
   - *provideAndRegisterCDADocument* for providing and registering a CDA document to XDS. 
  The method picks the XDS metadata from the given CDA document.
 
+The library can either be built and installed on the local system, or picked from the 4S maven reposiotory: [http://artifactory.4s-online.dk/artifactory/libs-snapshot-local](http://artifactory.4s-online.dk/artifactory/libs-snapshot-local).
+
 ### Java/Maven
-  - In *pom.xml* add:  
-    ```xml
+  - In *pom.xml* add:
+```
+#!xml
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
     <dependency>  
       <groupId>org.net4care</groupId>  
       <artifactId>xds-connector</artifactId>  
-      <version>0.5-SNAPSHOT</version>
     </dependency>
-    ```
+```
 
 ### Grails
   - In *BuildConfig.groovy* add the liobray as a dependency:  
-    ```grails
-    compile("org.net4care:xds-connector:0.0.5-SNAPSHOT")`
-    ```
+
+```
+#!groovy
+
+    compile("org.net4care:xds-connector:0.0.5-SNAPSHOT")
+```
   - In *Config.groovy* add the libray as a Spring bean package:  
-    ```grails
-    grails.spring.bean.packages = ["org.net4care.xdsconnector", ...]`
-    ```
+```
+#!groovy
+
+    grails.spring.bean.packages = ["org.net4care.xdsconnector", ...]
+```
 
 ## Deploy
 Only maintainers of the repository should do this, provided here for reference
