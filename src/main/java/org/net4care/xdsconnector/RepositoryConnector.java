@@ -111,7 +111,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
       ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
       document.setId(getDocumentId(submitRequest));
-      // document.setValue(writer.toByteArray());
+      document.setValue(writer.toByteArray());
       request.getDocument().add(document);
     }
     catch (Exception ex) {
@@ -125,8 +125,6 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
     try {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      // DataSource source = new ByteArrayDataSource(cdaString, "text/xml");
-      // Document cdaDocument = builder.parse(source.getInputStream());
       byte[] bytes = cdaString.getBytes(StandardCharsets.UTF_8);
       Document cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
 
@@ -135,7 +133,6 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
       ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
       document.setId(getDocumentId(submitRequest));
-      // document.setValue(new DataHandler(source));
       document.setValue(bytes);
       request.getDocument().add(document);
     }

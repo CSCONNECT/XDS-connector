@@ -20,6 +20,7 @@ public class MtomMessageCallback extends MessageCallback {
     OMOutputFormat outputFormat = new OMOutputFormat();
     outputFormat.setSOAP11(false);
     outputFormat.setDoOptimize(true);
+    outputFormat.setCharSetEncoding("utf-8");
     ((AxiomSoapMessage) message).setOutputFormat(outputFormat);
   }
 }

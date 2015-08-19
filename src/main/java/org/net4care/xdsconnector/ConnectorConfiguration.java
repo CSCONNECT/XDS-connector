@@ -36,13 +36,12 @@ public class ConnectorConfiguration {
 	@Bean
 	public RepositoryConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
 		RepositoryConnector client = new RepositoryConnector();
+		client.setDefaultUri(repositoryUrl);
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
 		mf.setAttachmentCacheDir(new File(System.getProperty("java.io.tmpdir")));
 		client.setMessageFactory(mf);
-
-		client.setDefaultUri(repositoryUrl);
 
 		marshaller.setMtomEnabled(true);
 		client.setMarshaller(marshaller);
@@ -54,13 +53,12 @@ public class ConnectorConfiguration {
 	@Bean
 	public RegistryConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
 		RegistryConnector client = new RegistryConnector();
+		client.setDefaultUri(registryUrl);
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
 		mf.setAttachmentCacheDir(new File(System.getProperty("java.io.tmpdir")));
 		client.setMessageFactory(mf);
-
-		client.setDefaultUri(registryUrl);
 
 		client.setMarshaller(marshaller);
 		client.setUnmarshaller(marshaller);
