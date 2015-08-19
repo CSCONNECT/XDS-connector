@@ -42,11 +42,11 @@
         <configuration>
           <schemaLanguage>WSDL</schemaLanguage>
           <generatePackage>org.net4care.xdsconnector.service</generatePackage>
-          <bindingDirectory>${basedir}/src/main/xjb</bindingDirectory>
+          <bindingDirectory>${basedir}/src/main/schema/bindings</bindingDirectory>
           <schemas>
             <schema>
               <fileset>                                                                      
-                <directory>${basedir}/src/main/wsdl</directory>
+                <directory>${basedir}/src/main/schema</directory>
                 <includes>
                   <include>*.wsdl</include>
                 </includes>
