@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerException;
 
 import org.net4care.xdsconnector.Utilities.MtomMessageCallback;
 import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
@@ -18,11 +19,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.oxm.Unmarshaller;
+import org.springframework.ws.WebServiceMessage;
+import org.springframework.ws.client.core.WebServiceMessageCallback;
+import org.springframework.ws.client.core.WebServiceMessageExtractor;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.support.MarshallingUtils;
 import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Configuration
@@ -47,7 +54,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     try {
       // using the JAXB Wrapper voids the requirement for a @XMLRootElement annotation on the domain model objects
       RetrieveDocumentSetRequestType request = new RetrieveDocumentSetRequestType();
-      JAXBElement<RetrieveDocumentSetRequestType> requestWrapper = new ObjectFactory().createRetrieveDocumentSetRequest(request);
+      JAXBElement<RetrieveDocumentSetRequestType> requestPayload = new ObjectFactory().createRetrieveDocumentSetRequest(request);
 
       DocumentRequest documentRequest = new DocumentRequest();
       documentRequest.setDocumentUniqueId(docId);
@@ -57,7 +64,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
       @SuppressWarnings("unchecked")
       JAXBElement<RetrieveDocumentSetResponseType> result = (JAXBElement<RetrieveDocumentSetResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new MtomMessageCallback(repositoryUrl, "RetrieveDocumentSet"));
+        .marshalSendAndReceive(requestPayload,  new MtomMessageCallback(repositoryUrl, "RetrieveDocumentSet"));
 
       return result.getValue();
     }
@@ -69,11 +76,11 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
   public RegistryResponseType provideAndRegisterCDADocument(Document cda) {
     try {
       ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
-      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
+      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
       @SuppressWarnings("unchecked")
       JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+          .marshalSendAndReceive(requestPayload, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
 
       return result.getValue();
     }
@@ -85,11 +92,11 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
   public RegistryResponseType provideAndRegisterCDADocument(String cda) {
     try {
       ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
-      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
+      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
       @SuppressWarnings("unchecked")
       JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+          .marshalSendAndReceive(requestPayload, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
 
       return result.getValue();
     }

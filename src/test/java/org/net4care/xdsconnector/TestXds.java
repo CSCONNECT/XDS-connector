@@ -1,5 +1,6 @@
 package org.net4care.xdsconnector;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.net4care.xdsconnector.service.RegistryResponseType;
@@ -9,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -40,20 +41,30 @@ public class TestXds {
   }
 
   @Test
-  public void provideAndRegisterCDADocument() {
+  public void provideAndRegisterAndRetrieveCDADocument() {
     try {
-      String path = "examples/Ex1-Weight_measurement.xml";
-      java.net.URL url = getClass().getClassLoader().getResource(path);
-      List<String> lines = Files.readAllLines(Paths.get(url.toURI()), Charset.forName("UTF-8"));
-      String cda = StringUtils.collectionToDelimitedString(lines, "\n");
+      // the date for the document is 13.01.2014
+      java.net.URL url = getClass().getClassLoader().getResource("examples/Ex1-Weight_measurement.xml");
+      List<String> lines = Files.readAllLines(Paths.get(url.toURI()), StandardCharsets.UTF_8);
+      String providedDocument = StringUtils.collectionToDelimitedString(lines, "\n");
+
       // make a new unique id
-      cda = cda.replace("aa2386d0-79ea-11e3-981f-0800200c9a66", UUID.randomUUID().toString());
-      RegistryResponseType response = xdsRepositoryConnector.provideAndRegisterCDADocument(cda);
-      System.out.println("\nResult: " + new String(response.getStatus()) + "\n");
+      String uuid = UUID.randomUUID().toString();
+      providedDocument = providedDocument.replace("aa2386d0-79ea-11e3-981f-0800200c9a66", uuid);
+      RegistryResponseType provideResponse = xdsRepositoryConnector.provideAndRegisterCDADocument(providedDocument);
+      System.out.println("\nProvideAndRegister Result: " + provideResponse.getStatus());
+
+      String docId = "1.2.208.184^" + uuid.replace("-", "").substring(0, 16);
+      RetrieveDocumentSetResponseType retriveResponse = xdsRepositoryConnector.retrieveDocumentSet(docId);
+      System.out.println("\nRetrieveDocument Result: " + retriveResponse.getRegistryResponse().getStatus());
+
+      RetrieveDocumentSetResponseType.DocumentResponse documentResponse = retriveResponse.getDocumentResponse().get(0);
+      String retrievedDocument = new String(documentResponse.getDocument(), StandardCharsets.UTF_8);
+
+      Assert.assertEquals(providedDocument, retrievedDocument);
     }
     catch (Throwable t) {
-      System.out.println("\nError: " + t.getMessage() + "\n");
+      System.out.println("\nError: " + t.getMessage());
     }
   }
-
 }

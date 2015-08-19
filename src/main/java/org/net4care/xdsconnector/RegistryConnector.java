@@ -63,7 +63,7 @@ public class RegistryConnector extends WebServiceGatewaySupport {
 
 	private AdhocQueryResponseType queryRegistry(List<SlotType1> slots) {
 		AdhocQueryRequestType request = new ObjectFactory().createAdhocQueryRequestType();
-		JAXBElement<AdhocQueryRequestType> requestWrapper = new ObjectFactory().createAdhocQueryRequest(request);
+		JAXBElement<AdhocQueryRequestType> requestPayload = new ObjectFactory().createAdhocQueryRequest(request);
 
 		//Build the XDS query
 		ResponseOptionType responseOption = new ResponseOptionType();
@@ -83,7 +83,7 @@ public class RegistryConnector extends WebServiceGatewaySupport {
 		// Query the XDS registry
 		@SuppressWarnings("unchecked")
 		JAXBElement<AdhocQueryResponseType> result = (JAXBElement<AdhocQueryResponseType>) getWebServiceTemplate()
-				.marshalSendAndReceive(requestWrapper, new MessageCallback(registryUrl, "RegistryStoredQuery"));
+				.marshalSendAndReceive(requestPayload, new MessageCallback(registryUrl, "RegistryStoredQuery"));
 
 		return (AdhocQueryResponseType) result.getValue();
 	}

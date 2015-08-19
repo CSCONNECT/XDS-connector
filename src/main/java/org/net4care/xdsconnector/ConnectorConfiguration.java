@@ -41,6 +41,7 @@ public class ConnectorConfiguration {
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
 		mf.setSoapVersion(SoapVersion.SOAP_12);
 		mf.setAttachmentCacheDir(new File(System.getProperty("java.io.tmpdir")));
+		mf.setAttachmentCaching(true);
 		client.setMessageFactory(mf);
 
 		marshaller.setMtomEnabled(true);

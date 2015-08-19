@@ -50,9 +50,9 @@ public class TestSubmitObjectsRequestHelper {
       String cda = StringUtils.collectionToDelimitedString(lines, "\n");
 
       ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda);
-      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestWrapper = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
+      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
-      String xml = serialize(requestWrapper, request.getClass());
+      String xml = serialize(requestPayload, request.getClass());
       System.out.println(xml);
     }
     catch (Exception ex) {
