@@ -54,7 +54,8 @@ public class RegistryConnector extends WebServiceGatewaySupport {
 			List<AdhocQueryResponseType> queryResponses = new LinkedList<AdhocQueryResponseType>();
 			for (List<SlotType1> query: queries){
 				query.add(patientIdSlot);
-				queryResponses.add(queryRegistry(query));
+				AdhocQueryResponseType queryResponse = queryRegistry(query);
+				queryResponses.add(queryResponse);
 			}
 
 			return queryResponses;

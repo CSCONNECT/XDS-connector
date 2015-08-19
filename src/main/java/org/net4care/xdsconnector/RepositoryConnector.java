@@ -1,12 +1,15 @@
 package org.net4care.xdsconnector;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.net4care.xdsconnector.Utilities.MessageCallback;
+import org.net4care.xdsconnector.Utilities.MtomMessageCallback;
 import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
 import org.net4care.xdsconnector.service.*;
 import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType.DocumentRequest;
@@ -20,7 +23,7 @@ import org.w3c.dom.Document;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
@@ -47,13 +50,14 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
       JAXBElement<RetrieveDocumentSetRequestType> requestWrapper = new ObjectFactory().createRetrieveDocumentSetRequest(request);
 
       DocumentRequest documentRequest = new DocumentRequest();
-      documentRequest.setRepositoryUniqueId(repositoryId);
       documentRequest.setDocumentUniqueId(docId);
+      documentRequest.setHomeCommunityId(homeCommunityId);
+      documentRequest.setRepositoryUniqueId(repositoryId);
       request.getDocumentRequest().add(documentRequest);
 
       @SuppressWarnings("unchecked")
       JAXBElement<RetrieveDocumentSetResponseType> result = (JAXBElement<RetrieveDocumentSetResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "RetrieveDocumentSet"));
+          .marshalSendAndReceive(requestWrapper, new MtomMessageCallback(repositoryUrl, "RetrieveDocumentSet"));
 
       return result.getValue();
     }
@@ -69,7 +73,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
       @SuppressWarnings("unchecked")
       JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+          .marshalSendAndReceive(requestWrapper, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
 
       return result.getValue();
     }
@@ -85,7 +89,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
       @SuppressWarnings("unchecked")
       JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
-          .marshalSendAndReceive(requestWrapper, new MessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+          .marshalSendAndReceive(requestWrapper, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
 
       return result.getValue();
     }
@@ -97,45 +101,47 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
   protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(Document cdaDocument) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
-    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
-    request.setSubmitObjectsRequest(submitRequest);
-
-    ByteArrayOutputStream writer = new ByteArrayOutputStream();
     try {
+      SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
+      request.setSubmitObjectsRequest(submitRequest);
+
+      ByteArrayOutputStream writer = new ByteArrayOutputStream();
       Marshaller marshaller = JAXBContext.newInstance(cdaDocument.getClass()).createMarshaller();
       marshaller.marshal(cdaDocument, writer);
+
+      ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
+      document.setId(getDocumentId(submitRequest));
+      // document.setValue(writer.toByteArray());
+      request.getDocument().add(document);
     }
     catch (Exception ex) {
       // TODO: log this
     }
-
-    ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
-    document.setId(getDocumentId(submitRequest));
-    document.setValue(writer.toByteArray());
-    request.getDocument().add(document);
-
     return request;
   }
 
   protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(String cdaString) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
-    Document cdaDocument = null;
-    byte[] bytes = cdaString.getBytes(Charset.forName("UTF-8"));
     try {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
+      // DataSource source = new ByteArrayDataSource(cdaString, "text/xml");
+      // Document cdaDocument = builder.parse(source.getInputStream());
+      byte[] bytes = cdaString.getBytes(StandardCharsets.UTF_8);
+      Document cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
+
+      SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
+      request.setSubmitObjectsRequest(submitRequest);
+
+      ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
+      document.setId(getDocumentId(submitRequest));
+      // document.setValue(new DataHandler(source));
+      document.setValue(bytes);
+      request.getDocument().add(document);
     }
     catch (Exception ex) {
       // TODO: log this
     }
-    SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
-    request.setSubmitObjectsRequest(submitRequest);
-
-    ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
-    document.setId(getDocumentId(submitRequest));
-    document.setValue(bytes);
-    request.getDocument().add(document);
 
     return request;
   }

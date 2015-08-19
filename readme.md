@@ -47,7 +47,7 @@ The library can either be built and installed on the local system, or picked fro
 ```
 
 ### Grails
-  - In *BuildConfig.groovy* add the liobray as a dependency:  
+  - In *BuildConfig.groovy* add the library as a dependency:  
 
 ```
 #!groovy

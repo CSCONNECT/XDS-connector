@@ -33,11 +33,5 @@ public class MessageCallback implements WebServiceMessageCallback {
       .setText(url);
     soapHeader.addHeaderElement(new QName("http://www.w3.org/2005/08/addressing", "MessageID", "wsa"))
       .setText("urn:uuid:" + UUID.randomUUID().toString());
-
-    // enable MTOM, technically this is only necessary on output
-    OMOutputFormat outputFormat = new OMOutputFormat();
-    outputFormat.setSOAP11(false);
-    outputFormat.setDoOptimize(true);
-    soapMessage.setOutputFormat(outputFormat);
   }
 }
