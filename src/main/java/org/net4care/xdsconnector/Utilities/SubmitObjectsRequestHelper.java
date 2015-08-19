@@ -31,7 +31,6 @@ public class SubmitObjectsRequestHelper {
 
   public SubmitObjectsRequest buildFromCDA(Document cda) {
     // TODO: should these be parameterized?
-
     String associatedId = UUID.randomUUID().toString();
     String submissionSetId = UUID.randomUUID().toString();
 
@@ -49,6 +48,8 @@ public class SubmitObjectsRequestHelper {
 
   public void addStableDocumentEntry(RegistryObjectListType registry, Document cda, String associatedId) {
     String title = getString(cda, "ClinicalDocument/title");
+    // TODO: remove this debugging entry
+    title += ": " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     ExtrinsicObjectType documentEntry = createStableDocumentEntryObject(associatedId, title);
 
     addLanguageCode(documentEntry, cda);
