@@ -29,7 +29,7 @@ The repository connector offers the following methods:
   - *provideAndRegisterCDADocument* for providing and registering a CDA document to XDS. 
  The method picks the XDS metadata from the given CDA document.
 
-The library can either be built and installed on the local system, or picked from the 4S maven reposiotory: [http://artifactory.4s-online.dk/artifactory/libs-snapshot-local](http://artifactory.4s-online.dk/artifactory/libs-snapshot-local).
+The library can either be built and installed on the local system, or picked from the 4S maven reposiotory: [http://artifactory.4s-online.dk/artifactory/net4care](http://artifactory.4s-online.dk/artifactory/net4care).
 
 ### Java/Maven
   - In *pom.xml* add:
@@ -44,6 +44,14 @@ The library can either be built and installed on the local system, or picked fro
       <groupId>org.net4care</groupId>  
       <artifactId>xds-connector</artifactId>  
     </dependency>
+
+    ...
+
+    <repository>
+      <id>4S-artifactory</id>
+      <name>4S Artifactory</name>
+      <url>http://artifactory.4s-online.dk/artifactory/net4care</url>
+    </repository>
 ```
 
 ### Grails
@@ -52,7 +60,15 @@ The library can either be built and installed on the local system, or picked fro
 ```
 #!groovy
 
-    compile("org.net4care:xds-connector:0.0.5-SNAPSHOT")
+    repositories {
+      ...
+      mavenRepo name: "4S", root: "http://artifactory.4s-online.dk/artifactory/net4care"
+    }
+
+    dependencies {
+      ...
+      compile("org.net4care:xds-connector:0.0.5-SNAPSHOT")
+    }
 ```
   - In *Config.groovy* add the libray as a Spring bean package:  
 ```
