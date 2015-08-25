@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.AssertTrue;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -53,14 +54,15 @@ public class TestXds {
       providedDocument = providedDocument.replace("aa2386d0-79ea-11e3-981f-0800200c9a66", uuid);
       RegistryResponseType provideResponse = xdsRepositoryConnector.provideAndRegisterCDADocument(providedDocument);
       System.out.println("\nProvideAndRegister Result: " + provideResponse.getStatus());
+      Assert.assertTrue(provideResponse.getStatus().endsWith("Success"));
 
       String docId = "1.2.208.184^" + uuid.replace("-", "").substring(0, 16);
       RetrieveDocumentSetResponseType retriveResponse = xdsRepositoryConnector.retrieveDocumentSet(docId);
+      Assert.assertTrue(retriveResponse.getRegistryResponse().getStatus().endsWith("Success"));
       System.out.println("\nRetrieveDocument Result: " + retriveResponse.getRegistryResponse().getStatus());
 
       RetrieveDocumentSetResponseType.DocumentResponse documentResponse = retriveResponse.getDocumentResponse().get(0);
       String retrievedDocument = new String(documentResponse.getDocument(), StandardCharsets.UTF_8);
-
       Assert.assertEquals(providedDocument, retrievedDocument);
     }
     catch (Throwable t) {

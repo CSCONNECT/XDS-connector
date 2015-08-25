@@ -128,13 +128,17 @@
           <text>No Vital Signs</text>
         </section>
       </component>
-      
+
       <component typeCode="COMP" contextConductionInd="true">
         <section classCode="DOCSECT" moodCode="EVN">
           <templateId root="2.16.840.1.113883.10.20.1.14"/>
           <templateId root="1.2.208.184.11.1"/>
           <code code="30954-2" codeSystem="2.16.840.1.113883.6.1"/>
           <title>Results</title>
+          <text>2014-01-06 08:02: 77.5 kg Legeme masse; Pt, Målt af borgeren, Måling overført automatisk
+2014-01-08 07:45: 77.0 kg Legeme masse; Pt, Målt af borgeren, Måling overført automatisk
+2014-01-10 08:15: 77.0 kg Legeme masse; Pt, Målt af borgeren, Måling overført automatisk
+          </text>
           <entry typeCode="COMP" contextConductionInd="true">
             <organizer classCode="CLUSTER" moodCode="EVN">
               <templateId root="2.16.840.1.113883.10.20.1.35"/>
@@ -200,6 +204,7 @@
           <templateId root="1.2.208.184.11.1"/>
           <code code="46264-8" codeSystem="2.16.840.1.113883.6.1"/>
           <title>Medical Equipment</title>
+          <text>Manufacturer: AD Company / Model: 6121ABT1, SerialNr: 6121ABT1-987 Rev. 3 / SW Rev. 20144711</text>
           <entry typeCode="COMP" contextConductionInd="true">
             <organizer classCode="CLUSTER" moodCode="EVN">
               <templateId root="2.16.840.1.113883.10.20.9.4"/>
