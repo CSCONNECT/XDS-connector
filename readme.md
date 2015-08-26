@@ -77,9 +77,23 @@ The library can either be built and installed on the local system, or picked fro
     grails.spring.bean.packages = ["org.net4care.xdsconnector", ...]
 ```
 
+### Implementation Details
+
+The component generates classes for the interaction with XDS using the
+[Maven JAXB2 plugin](https://java.net/projects/maven-jaxb2-plugin/pages/Home)
+based on the WSDL and XML schema files.
+
+### Test
+
+There is some unit testing of the *SubmitObjectsRequestHelper* to compare the output to the Danish XDS Metadata profile.
+Besides that, there is a *TestApplication* which allows for mocking up tests in the console, and *TestXds* unit tests,
+which allows for mocking up unit tests for interacting with XDS.
+
+The properties for configuring the XDS connections for test are in the test resources.
+
 ## Deploy
 Only maintainers of the repository should do this, provided here for reference
 
  - Add artifactory credentials to *$HOME/.m2/settings.xml*
- - Verify that the pom.xml has the proper version number and that changes.md is updated
+ - Verify that the pom.xml has the proper version number
  - Execute: `mvn deploy`
