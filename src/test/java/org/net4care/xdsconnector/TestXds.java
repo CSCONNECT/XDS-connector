@@ -62,7 +62,7 @@ public class TestXds {
       System.out.println("\nRetrieveDocument Result: " + retriveResponse.getRegistryResponse().getStatus());
 
       RetrieveDocumentSetResponseType.DocumentResponse documentResponse = retriveResponse.getDocumentResponse().get(0);
-      String retrievedDocument = new String(documentResponse.getDocument(), StandardCharsets.UTF_8);
+      String retrievedDocument = new String(documentResponse.getDocument());
       Assert.assertEquals(providedDocument, retrievedDocument);
     }
     catch (Throwable t) {

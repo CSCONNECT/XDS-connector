@@ -19,10 +19,10 @@ and issue tracking in [JIRA](https://issuetracker4s.atlassian.net/browse/NXC).
 ## Develop
 
 The library is a [Spring boot](http://projects.spring.io/spring-boot) application, which offers two Spring beans
-*xdsRegistryConnector* and *xdsRepositoryConnector*, which expose methods for interacting with XDS.
+*xdsRegistryConnector* and *xdsRepositoryConnector*, that expose methods for interacting with XDS.
 
 The registry connector offers the following method:  
-  - *queryRegistry* for querying the registry for the registry for documents for the given patient. 
+  - *queryRegistry* for querying the registry for documents for the given patient.
 
 The repository connector offers the following methods:  
   - *retrieveDocumentSet* for retrieving a document from XDS with the given document id.  
@@ -70,7 +70,7 @@ The library can either be built and installed on the local system, or picked fro
       compile("org.net4care:xds-connector:0.0.5-SNAPSHOT")
     }
 ```
-  - In *Config.groovy* add the libray as a Spring bean package:  
+  - In *Config.groovy* add the library as a Spring bean package:
 ```
 #!groovy
 

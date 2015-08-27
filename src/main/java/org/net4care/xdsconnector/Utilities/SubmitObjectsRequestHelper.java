@@ -114,6 +114,8 @@ public class SubmitObjectsRequestHelper {
     registry.getIdentifiable().add(factory.createAssociation(association));
   }
 
+  // Section references in comments refer to the Danish XDS metadata profile,
+  // see http://svn.medcom.dk/svn/drafts/Standarder/IHE/DK_profil_metadata/
   // 2.2.2, 8, 13, 18, 19, & 31
   public ExtrinsicObjectType createStableDocumentEntryObject(String associatedId, String title) {
     ExtrinsicObjectType extobj = factory.createExtrinsicObjectType();
@@ -185,7 +187,7 @@ public class SubmitObjectsRequestHelper {
 
   public ClassificationType createConfidentialityCode(String associatedId, String valueId) {
     if (StringUtils.hasLength(valueId)) valueId="N";
-    String valueName = confidialityCode2DisplayName(valueId);
+    String valueName = COID.HL7.confidialityCode2DisplayName(valueId);
     return createClassification(CUUID.DocumentEntry.confidentialityCode, associatedId, valueId, valueName, COID.HL7.Confidentiality);
   }
 
@@ -241,18 +243,18 @@ public class SubmitObjectsRequestHelper {
     ClassificationType classification = null;
     String templateId = getString(cda, "ClinicalDocument/templateId/@root");
     switch (templateId) {
-      case "1.2.208.184.11.1":
+      case COID.DK.TemplateId_PHMR:
         classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
         break;
-      case "2.16.840.1.113883.3.4208.11.1":
+      case COID.DK.TemplateId_PHMR_OLD:
         // TODO: remove, added to support the old OID's
         classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
         break;
-      case "1.2.208.184.13.1":
+      case COID.DK.TemplateId_QRD:
         // TODO: get QRD format code, handle multiple template ids
         // classification = createFormatCode(associatedId, COID.DK.FormatCode_QRD_Code, COID.DK.FormatCode_QRD_DisplayName);
         break;
-      case "2.16.840.1.113883.10.20.32":
+      case COID.DK.TemplateId_QFDD:
         // TODO: get QFDD format code, handle multiple template ids
         // classification = createFormatCode(associatedId, COID.DK.FormatCode_QFDD_Code, COID.DK.FormatCode_QFDD_DisplayName);
         break;
@@ -274,9 +276,9 @@ public class SubmitObjectsRequestHelper {
   // 2.2.12 healthcareFacilityTypeCode, mandatory
   public void addHealthcareFacilityTypeCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
     // TODO: info not in CDA, locked to hospital for now. Should be configurable or parametrized.
-    String facilityCodeSystem = "2.16.840.1.113883.3.4208.100.11";
-    String facilityCode = "22232009";
-    String facilityName = healthcareFacilityTypeCode2DisplayName(facilityCode);
+    String facilityCodeSystem = COID.DK.FacilityCodeSystem;
+    String facilityCode = COID.DK.FacilityCode;
+    String facilityName = COID.DK.facilityTypeCode2DisplayName(facilityCode);
     documentEntry.getClassification().add(createHealthcareFacilityTypeCode(associatedId, facilityCodeSystem, facilityCode, facilityName));
   }
 
@@ -501,7 +503,7 @@ public class SubmitObjectsRequestHelper {
   public ExternalIdentifierType createSubmissionSetUniqueId(String associatedId, String root, String extension) {
     // String value = formatUniqueId(root, extension);
     // TODO: HACK create unique OID
-    String value = String.format("%s.%d", root, Long.parseLong(extension.replace("-", "").substring(0,15), 16));
+    String value = String.format("%s.%d", root, Long.parseLong(extension.replace("-", "").substring(0, 15), 16));
     return createExternalIdentifier(CUUID.SubmissionSet.uniqueId, associatedId, "XDSSubmissionSet.uniqueId", value);
   }
 
@@ -519,52 +521,6 @@ public class SubmitObjectsRequestHelper {
   //
   // private methods
   //
-  private String confidialityCode2DisplayName(String code) {
-    // see http://hl7.org/fhir/v3/Confidentiality
-    switch (code.toUpperCase()) {
-      case "U": return "Unrestricted";
-      case "L": return "Low";
-      case "M": return "Moderate";
-      case "N": return "Normal";
-      case "R": return "Restricted";
-      case "V": return "Very restricted";
-      default: return "";
-    }
-  }
-
-  private String healthcareFacilityTypeCode2DisplayName(String code) {
-    switch (code) {
-      case "264372000": return "apotek";
-      case "20078004": return "behandlingscenter for stofmisbrugere";
-      case "554221000005108": return "bosted";
-      case "554031000005103": return "diætistklinik";
-      case "546821000005103": return "ergoterapiklinik";
-      case "547011000005103": return "fysioterapiklinik";
-      case "546811000005109": return "genoptræningscenter";
-      case "550621000005101": return "hjemmesygepleje";
-      case "22232009": return "hospital";
-      case "550631000005103": return "jordemoderklinik";
-      case "550641000005106": return "kiropraktor klinik";
-      case "550651000005108": return "lægelaboratorium";
-      case "394761003": return "lægepraksis";
-      case "550661000005105": return "lægevagt";
-      case "42665001": return "plejehjem";
-      case "554211000005102": return "præhospitals enhed";
-      case "550711000005101": return "psykologisk rådgivningsklinik";
-      case "550671000005100": return "speciallægepraksis";
-      case "554061000005105": return "statsautoriseret fodterapeut";
-      case "264361005": return "sundhedscenter";
-      case "554041000005106": return "sundhedsforvaltning";
-      case "554021000005101": return "sundhedspleje";
-      case "550681000005102": return "tandlægepraksis";
-      case "550691000005104": return "tandpleje klinik";
-      case "550701000005104": return "tandteknisk klinik";
-      case "554231000005106": return "vaccinationsklinik";
-      case "554051000005108": return "zoneterapiklinik";
-      default: return "";
-    }
-  }
-
   private String prefixOID(String id) {
     if (id == null) id = "";
     return (id.startsWith("urn:oid:")) ? id : "urn:oid:" + id;
