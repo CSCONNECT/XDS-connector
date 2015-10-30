@@ -6,7 +6,7 @@
   </appender>
     
   <logger name="org.springframework.ws.client.MessageTracing">
-    <level value="INFO"/>
+    <level value="TRACE"/>
     <appender-ref ref="STDOUT" />
   </logger>
   
