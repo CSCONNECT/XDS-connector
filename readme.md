@@ -1,7 +1,7 @@
 # Net4Care XDS Connector
 
 The XDS Connector is a standalone component for interfacing *Cross Enterprise Document Sharing* (XDS) sources, 
-which follows the Danish profilation of XDS metadata.
+which follows the Danish profiling of XDS metadata.
 
 For more information see the [wiki page]([http://wiki.4s-online.dk/doku.php?id=net4care:xds-connector:overview).
 
@@ -29,7 +29,7 @@ The repository connector offers the following methods:
   - *provideAndRegisterCDADocument* for providing and registering a CDA document to XDS. 
  The method picks the XDS metadata from the given CDA document.
 
-The library can either be built and installed on the local system, or picked from the 4S maven reposiotory: [http://artifactory.4s-online.dk/artifactory/net4care](http://artifactory.4s-online.dk/artifactory/net4care).
+The library can either be built and installed on the local system, or picked from the 4S maven repository: [http://artifactory.4s-online.dk/artifactory/net4care](http://artifactory.4s-online.dk/artifactory/net4care).
 
 ### Java/Maven
   - In *pom.xml* add:
