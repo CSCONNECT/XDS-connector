@@ -31,6 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
@@ -105,6 +106,22 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
   }
 
+  public RegistryResponseType provideAndRegisterCDADocuments(List<String> cdas) {
+    try {
+      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentsRequest(cdas);
+      JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
+
+      @SuppressWarnings("unchecked")
+      JAXBElement<RegistryResponseType> result = (JAXBElement<RegistryResponseType>) getWebServiceTemplate()
+              .marshalSendAndReceive(requestPayload, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
+
+      return result.getValue();
+    }
+    catch (Throwable t) {
+      throw t;
+    }
+  }
+
   protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(Document cdaDocument) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
@@ -145,6 +162,38 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
     catch (Exception ex) {
       // TODO: log this
+    }
+
+    return request;
+  }
+
+  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentsRequest(List<String> cdaStrings) {
+    ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
+
+    try {
+      SubmitObjectsRequest submitRequest = new SubmitObjectsRequest();
+      request.setSubmitObjectsRequest(submitRequest);
+
+      Map<String, Document> cdaDocuments = new HashMap<String, Document>();
+      //List<Document> cdaDocuments = new ArrayList<Document>();
+      for (String cdaString : cdaStrings) {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        byte[] bytes = cdaString.getBytes(StandardCharsets.UTF_8);
+        Document cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
+
+        String docEntryId = UUID.randomUUID().toString();
+        cdaDocuments.put(docEntryId, cdaDocument);
+
+        ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
+        document.setId(docEntryId);
+        document.setValue(bytes);
+        request.getDocument().add(document);
+      }
+
+      new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDAs(submitRequest, cdaDocuments);
+    }
+    catch (Exception ex) {
+      logger.error("", ex);
     }
 
     return request;
