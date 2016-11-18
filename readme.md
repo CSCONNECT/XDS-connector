@@ -1,7 +1,7 @@
 # Net4Care XDS Connector
 
 The XDS Connector is a standalone component for interfacing *Cross Enterprise Document Sharing* (XDS) sources, 
-which follows the Danish profiling of XDS metadata.
+which follows the Danish profiling of XDS metadata version 0.95.
 
 For more information see the [wiki page]([http://wiki.4s-online.dk/doku.php?id=net4care:xds-connector:overview).
 

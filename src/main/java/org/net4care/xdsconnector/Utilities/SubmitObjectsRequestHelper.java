@@ -29,17 +29,17 @@ public class SubmitObjectsRequestHelper {
     //
     // public methods
     //
-    public SubmitObjectsRequest buildFromCDA(Document cda) {
+    public SubmitObjectsRequest buildFromCDA(Document cda, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
         // TODO: should these be parameterized?
         // Or symbolic (meaning the registry will generate the ids - see http://wiki.ihe.net/index.php?title=Annotated_ProvideAndRegister.b_Transaction)
-        String associatedId = UUID.randomUUID().toString(); //id of the ExtrinsicObject that corresponds to the doc.entry in the submission
+        String associatedId = prefixUUID(UUID.randomUUID().toString()); //id of the ExtrinsicObject that corresponds to the doc.entry in the submission
         String submissionSetId = UUID.randomUUID().toString();
 
         SubmitObjectsRequest request = new SubmitObjectsRequest();
         RegistryObjectListType registry = factory.createRegistryObjectListType();
         request.setRegistryObjectList(registry);
 
-        addStableDocumentEntry(registry, cda, associatedId);
+        addStableDocumentEntry(registry, cda, associatedId, healthcareFacilityType, practiceSettingsCode);
         addRegistryPackage(registry, cda, submissionSetId);
         addClassificationNode(registry, submissionSetId);
         addAssociation(registry, submissionSetId, associatedId);
@@ -48,17 +48,17 @@ public class SubmitObjectsRequestHelper {
     }
 
     //cdas is expected to be a list of DocumentEntry ids (UUID or symbolic) paired with the CDAs the Doc.Entry should reference
-    public SubmitObjectsRequest buildFromCDAs(SubmitObjectsRequest request, Map<String, Document> cdas) {
+    public SubmitObjectsRequest buildFromCDAs(SubmitObjectsRequest request, Map<String, Document> cdas, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
         String submissionSetId = UUID.randomUUID().toString();
 
         RegistryObjectListType registry = factory.createRegistryObjectListType();
         request.setRegistryObjectList(registry);
 
         for (Map.Entry<String, Document> entry : cdas.entrySet()) {
-            String id = entry.getKey();
+            String id = prefixUUID(entry.getKey());
             Document cda = entry.getValue();
 
-            addStableDocumentEntry(registry, cda, id);
+            addStableDocumentEntry(registry, cda, id, healthcareFacilityType, practiceSettingsCode);
             addAssociation(registry, submissionSetId, id);
         }
 
@@ -70,10 +70,8 @@ public class SubmitObjectsRequestHelper {
         return request;
     }
 
-    public void addStableDocumentEntry(RegistryObjectListType registry, Document cda, String associatedId) {
+    public void addStableDocumentEntry(RegistryObjectListType registry, Document cda, String associatedId, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
         String title = getString(cda, "ClinicalDocument/title");
-        // TODO: remove this debugging entry
-        // title += ": " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         ExtrinsicObjectType documentEntry = createStableDocumentEntryObject(associatedId, title);
 
         addLanguageCode(documentEntry, cda);
@@ -90,8 +88,8 @@ public class SubmitObjectsRequestHelper {
         addClassCode(documentEntry, associatedId);
         addTypeCode(documentEntry, cda, associatedId);
         addConfidentialityCode(documentEntry, cda, associatedId);
-        addHealthcareFacilityTypeCode(documentEntry, cda, associatedId);
-        addPracticeSettingCode(documentEntry, associatedId);
+        addHealthcareFacilityTypeCode(documentEntry, cda, associatedId, healthcareFacilityType);
+        addPracticeSettingCode(documentEntry, associatedId, practiceSettingsCode);
         addEventCodeList(documentEntry, cda, associatedId);
 
         addDocumentEntryUniqueId(documentEntry, cda, associatedId);
@@ -110,7 +108,7 @@ public class SubmitObjectsRequestHelper {
         addSubmissionTime(registryPackage);
 
         addAuthor(registryPackage, cda, submissionSetId);
-        addContentTypeCode(registryPackage, submissionSetId);
+        addContentTypeCode(cda, registryPackage, submissionSetId);
 
         addSubmissionSetUniqueId(registryPackage, cda, submissionSetId);
         addSubmissionSetPatientId(registryPackage, cda, submissionSetId);
@@ -216,13 +214,16 @@ public class SubmitObjectsRequestHelper {
     }
 
     // 2.2.6 contentTypeCode, not used
-    public void addContentTypeCode(RegistryPackageType registryPackage, String submissionSetId) {
-        registryPackage.getClassification().add(createContentTypeCode(submissionSetId));
+    public void addContentTypeCode(Document cda, RegistryPackageType registryPackage, String submissionSetId) {
+        registryPackage.getClassification().add(createContentTypeCode(cda, submissionSetId));
     }
 
-    public ClassificationType createContentTypeCode(String submissionSetId) {
-        // unused, but required, inserting empty values
-        return createClassification(CUUID.SubmissionSet.contentTypeCode, submissionSetId, "", "", "");
+    public ClassificationType createContentTypeCode(Document cda,String submissionSetId) {
+      // This might be changed in later DK metadata profile
+      String typeCode = getString(cda, "ClinicalDocument/code/@code");
+      String typeName = getString(cda, "ClinicalDocument/code/@displayName");
+      String typeSystem = getString(cda, "ClinicalDocument/code/@codeSystem");
+      return createClassification(CUUID.SubmissionSet.contentTypeCode, submissionSetId, typeCode, typeName, typeSystem);
     }
 
     // 2.2.7 creationTime, mandatory
@@ -265,29 +266,30 @@ public class SubmitObjectsRequestHelper {
     // 2.2.10 formatCode, mandatory
     public void addFormatCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
         ClassificationType classification = null;
-        String templateId = getString(cda, "ClinicalDocument/templateId/@root");
-        switch (templateId) {
-            case COID.DK.TemplateId_PHMR:
-                classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
-                break;
-            case COID.DK.TemplateId_PHMR_OLD:
-                // TODO: remove, added to support the old OID's
-                classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
-                break;
-            case COID.DK.TemplateId_QRD:
-                // TODO: get QRD format code, handle multiple template ids
-                // classification = createFormatCode(associatedId, COID.DK.FormatCode_QRD_Code, COID.DK.FormatCode_QRD_DisplayName);
-                break;
-            case COID.DK.TemplateId_QFDD:
-                // TODO: get QFDD format code, handle multiple template ids
-                // classification = createFormatCode(associatedId, COID.DK.FormatCode_QFDD_Code, COID.DK.FormatCode_QFDD_DisplayName);
-                break;
-            default:
-                // TODO: get generic CDA format code, handle multiple template ids
-                // classification = createFormatCode(associatedId, COID.DK.FormatCode_CDA_Code, COID.DK.FormatCode_CDA_DisplayName);
-                break;
+        List<String> templateIds = getStrings(cda, "ClinicalDocument/templateId/@root");
+        for (String templateId : templateIds) {
+          switch (templateId) {
+              case COID.DK.TemplateId_PHMR:
+                  classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
+                  break;
+              case COID.DK.TemplateId_PHMR_OLD:
+                  // TODO: remove, added to support the old OID's
+                  classification = createFormatCode(associatedId, COID.DK.FormatCode_PHMR_Code, COID.DK.FormatCode_PHMR_DisplayName);
+                  break;
+              case COID.DK.TemplateId_QRD:
+                   classification = createFormatCode(associatedId, COID.DK.FormatCode_QRD_Code, COID.DK.FormatCode_QRD_DisplayName);
+                  break;
+              case COID.DK.TemplateId_QFDD:
+                   classification = createFormatCode(associatedId, COID.DK.FormatCode_QFDD_Code, COID.DK.FormatCode_QFDD_DisplayName);
+                  break;
+              default:
+                  break;
+          }
+          if (classification != null) {
+            documentEntry.getClassification().add(classification);
+            break;
+            }
         }
-        if (classification != null) documentEntry.getClassification().add(classification);
     }
 
     public ClassificationType createFormatCode(String associatedId, String code, String displayName) {
@@ -298,12 +300,8 @@ public class SubmitObjectsRequestHelper {
     // added by repository
 
     // 2.2.12 healthcareFacilityTypeCode, mandatory
-    public void addHealthcareFacilityTypeCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId) {
-        // TODO: info not in CDA, locked to hospital for now. Should be configurable or parametrized.
-        String facilityCodeSystem = COID.DK.FacilityCodeSystem;
-        String facilityCode = COID.DK.FacilityCode;
-        String facilityName = COID.DK.facilityTypeCode2DisplayName(facilityCode);
-        documentEntry.getClassification().add(createHealthcareFacilityTypeCode(associatedId, facilityCodeSystem, facilityCode, facilityName));
+    public void addHealthcareFacilityTypeCode(ExtrinsicObjectType documentEntry, Document cda, String associatedId, CodedValue healthcareFacilityType) {
+        documentEntry.getClassification().add(createHealthcareFacilityTypeCode(associatedId, healthcareFacilityType.getCodeSystem(), healthcareFacilityType.getCode(), healthcareFacilityType.getDisplayName()));
     }
 
     public ClassificationType createHealthcareFacilityTypeCode(String associatedId, String facilityCode, String facilityId, String facilityName) {
@@ -393,14 +391,14 @@ public class SubmitObjectsRequestHelper {
     }
 
     // 2.2.21 practiceSettingCode, not used
-    public void addPracticeSettingCode(ExtrinsicObjectType documentEntry, String associatedId) {
+    public void addPracticeSettingCode(ExtrinsicObjectType documentEntry, String associatedId, CodedValue practiceSettingsCode) {
         // unused, but required, inserting empty values
-        documentEntry.getClassification().add(createPracticeSettingCode(associatedId));
+        documentEntry.getClassification().add(createPracticeSettingCode(associatedId, practiceSettingsCode));
     }
 
-    public ClassificationType createPracticeSettingCode(String associatedId) {
+    public ClassificationType createPracticeSettingCode(String associatedId, CodedValue practiceSettingsCode) {
         // unused, but required, inserting empty values
-        return createClassification(CUUID.DocumentEntry.practiceSettingCode, associatedId, "", "", "");
+      return createClassification(CUUID.DocumentEntry.practiceSettingCode, associatedId, practiceSettingsCode.getCode(), practiceSettingsCode.getDisplayName(), practiceSettingsCode.getCodeSystem());
     }
 
     // 2.2.22 referenceIdList, optional
@@ -453,12 +451,12 @@ public class SubmitObjectsRequestHelper {
     // 2.2.28 sourcePatientId, mandatory
     public void addSourcePatientId(ExtrinsicObjectType documentEntry, Document cda) {
         String value = formatPatientId(cda);
-        documentEntry.getSlot().add(createSlot("sourcePatientId", "PID-3|" + value));
+        documentEntry.getSlot().add(createSlot("sourcePatientId", value));
     }
 
     public SlotType1 createSourcePatientId(String patientCodeSystem, String patientId) {
         String value = formatPatientId(patientCodeSystem, patientId);
-        return createSlot("sourcePatientId", "PID-3|" + value);
+        return createSlot("sourcePatientId", value);
     }
 
     // 2.2.29 sourcePatientInfo, mandatory
@@ -471,9 +469,7 @@ public class SubmitObjectsRequestHelper {
         String patientGender = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/administrativeGenderCode/@code");
 
         List<String> values = new ArrayList<String>();
-        values.add(String.format("PID-5|%s^%s^%s^^^", patientLastName, patientFirstName, patientMiddleName));
-        values.add(String.format("PID-7|%s", patientBirthTime.substring(0, 8)));
-        values.add(String.format("PID-8|%s", patientGender));
+        values.add(String.format("%s^%s^%s^^^%s^%s", patientLastName, patientFirstName, patientMiddleName, patientBirthTime.substring(0, 8), patientGender));
         documentEntry.getSlot().add(createSlot("sourcePatientInfo", values.toArray(new String[0])));
     }
 
@@ -525,7 +521,6 @@ public class SubmitObjectsRequestHelper {
     }
 
     public ExternalIdentifierType createSubmissionSetUniqueId(String associatedId, String root, String extension) {
-        // String value = formatUniqueId(root, extension);
         // TODO: HACK create unique OID
         String value = String.format("%s.%d", root, Long.parseLong(extension.replace("-", "").substring(0, 15), 16));
         return createExternalIdentifier(CUUID.SubmissionSet.uniqueId, associatedId, "XDSSubmissionSet.uniqueId", value);
@@ -536,11 +531,15 @@ public class SubmitObjectsRequestHelper {
         String extension = getString(cda, "ClinicalDocument/id/@extension");
         return formatUniqueId(root, extension);
     }
-
+    
     public String formatUniqueId(String root, String extension) {
-        // TODO: HACK, extension may only be 16 characters
-        return String.format("%s^%s", root, extension.replace("-", "").substring(0, 16));
+    if (extension != null && !extension.trim().isEmpty()) {
+      String newExtension = extension.replace("-", "");
+      return String.format("%s^%s", root, newExtension);
+    } else {
+      return root;
     }
+  }
 
     //
     // private methods

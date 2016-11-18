@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ClinicalDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:hl7-org:v3" classCode="DOCCLIN" moodCode="EVN">
+  <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
+  <templateId root="2.16.840.1.113883.10.20.9"/>
+  <templateId root="1.2.208.184.11.1"/>
+  <id root="1.2.208.184" extension="aa2386d0-79ea-11e3-981f-0800200c9a66" assigningAuthorityName="MedCom"/>
+  <code code="53576-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Personal Health Monitoring Report"/>
+  <title>Hjemmemonitorering for 2512484916</title>
+  <effectiveTime value="20140113101112+0100"/>
+  <confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25"/>
+  <languageCode code="da-DK"/>
+  <recordTarget typeCode="RCT" contextControlCode="OP">
+    <patientRole classCode="PAT">
+      <id extension="2512484916" root="1.2.208.176.1.2" assigningAuthorityName="CPR"/>
+      <addr use="H">
+        <streetAddressLine>Skovvejen 12</streetAddressLine>
+        <streetAddressLine>Landet</streetAddressLine>
+        <postalCode>5700</postalCode>
+        <city>Svendborg</city>
+        <country>Danmark</country>
+      </addr>
+      <telecom value="tel:65123456" use="H"/>
+      <telecom value="mailto:nab@udkantsdanmark.dk" use="WP"/>
+      <patient classCode="PSN" determinerCode="INSTANCE">
+        <name>
+          <given>Nancy</given>
+          <given>Ann</given>
+          <family>Berggren</family>
+        </name>
+        <administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1"/>
+        <birthTime value="19481225"/>
+      </patient>
+    </patientRole>
+  </recordTarget>
+  <author typeCode="AUT" contextControlCode="OP">
+    <time value="20140113100000+0100"/>
+    <assignedAuthor classCode="ASSIGNED">
+      <id extension="241301000016007" root="1.2.208.176.1.1" assigningAuthorityName="SOR"/>
+      <addr use="WP">
+        <streetAddressLine>Hjertemedicinsk afdeling B</streetAddressLine>
+        <streetAddressLine>Valdemarsgade 53</streetAddressLine>
+        <postalCode>5700</postalCode>
+        <city>Svendborg</city>
+        <country>Danmark</country>
+      </addr>
+      <telecom value="tel:65112233" use="WP"/>
+      <assignedPerson classCode="PSN" determinerCode="INSTANCE">
+        <name>
+          <given>Anders</given>
+          <family>Andersen</family>
+        </name>
+      </assignedPerson>
+      <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+        <name>Odense Universitetshospital - Svendborg Sygehus</name>
+        <telecom nullFlavor="NI"/>
+        <addr use="WP">
+          <streetAddressLine nullFlavor="NI"/>
+        </addr>
+      </representedOrganization>
+    </assignedAuthor>
+  </author>
+  <custodian typeCode="CST">
+    <assignedCustodian classCode="ASSIGNED">
+      <representedCustodianOrganization classCode="ORG" determinerCode="INSTANCE">
+        <id root="1.2.208.176.1.1" extension="241301000016007" assigningAuthorityName="SOR"/>
+        <name>Odense Universitetshospital - Svendborg Sygehus</name>
+        <telecom value="tel:65112233" use="WP"/>
+        <addr use="WP">
+          <streetAddressLine>Hjertemedicinsk afdeling B</streetAddressLine>
+          <streetAddressLine>Valdemarsgade 53</streetAddressLine>
+          <postalCode>5700</postalCode>
+          <city>Svendborg</city>
+          <country>Danmark</country>
+        </addr>
+      </representedCustodianOrganization>
+    </assignedCustodian>
+  </custodian>
+  <legalAuthenticator typeCode="LA" contextControlCode="OP">
+    <time value="20140113100000+0100"/>
+    <signatureCode nullFlavor="NI"/>
+    <assignedEntity classCode="ASSIGNED">
+      <id root="1.2.208.176.1.1" extension="88878685" assigningAuthorityName="SOR"/>
+      <addr use="WP">
+        <streetAddressLine>Hjertemedicinsk afdeling X</streetAddressLine>
+        <streetAddressLine>Valdemarsgade 53x</streetAddressLine>
+        <postalCode>5700</postalCode>
+        <city>Svendborg</city>
+        <country>Danmark</country>
+      </addr>
+      <telecom value="tel:55555555" use="WP"/>
+      <assignedPerson classCode="PSN" determinerCode="INSTANCE">
+        <name>
+          <given>Anders</given>
+          <family>Andersen</family>
+        </name>
+      </assignedPerson>
+      <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+        <name>Odense Universitetshospital - Svendborg Sygehus X</name>
+        <telecom nullFlavor="NI"/>
+        <addr use="WP">
+          <streetAddressLine nullFlavor="NI"/>
+        </addr>
+      </representedOrganization>
+    </assignedEntity>
+  </legalAuthenticator>
+  <documentationOf typeCode="DOC">
+    <serviceEvent classCode="MPROT" moodCode="EVN">
+      <effectiveTime>
+        <low value="20140106080200+0100"/>
+        <high value="20140110081500+0100"/>
+      </effectiveTime>
+    </serviceEvent>
+  </documentationOf>
+  <documentationOf typeCode="DOC">
+    <serviceEvent classCode="MPROT" moodCode="EVN">
+      <code code="NPU03804" codeSystem="1.2.208.176.2.1" displayName="Legeme masse; Pt"/>
+    </serviceEvent>
+  </documentationOf>
+  <component typeCode="COMP" contextConductionInd="true">
+    <structuredBody classCode="DOCBODY" moodCode="EVN">
+      <component typeCode="COMP" contextConductionInd="true">
+        <section classCode="DOCSECT" moodCode="EVN">
+          <templateId root="2.16.840.1.113883.10.20.1.16"/>
+          <templateId root="2.16.840.1.113883.10.20.9.2"/>
+          <templateId root="1.2.208.184.11.1"/>
+          <code code="8716-3" codeSystem="2.16.840.1.113883.6.1"/>
+          <title>Vital Signs</title>
+          <text>No Vital Signs</text>
+        </section>
+      </component>
+      <component typeCode="COMP" contextConductionInd="true">
+        <section classCode="DOCSECT" moodCode="EVN">
+          <templateId root="2.16.840.1.113883.10.20.1.14"/>
+          <templateId root="2.16.840.1.113883.10.20.9.14"/>
+          <templateId root="1.2.208.184.11.1"/>
+          <code code="30954-2" codeSystem="2.16.840.1.113883.6.1"/>
+          <title>Results</title>
+          <text>Results</text>
+          <entry typeCode="COMP" contextConductionInd="true">
+            <organizer classCode="CLUSTER" moodCode="EVN">
+              <templateId root="2.16.840.1.113883.10.20.1.35"/>
+              <statusCode code="completed"/>
+              <effectiveTime value="20140106080200+0100"/>
+              <component typeCode="COMP" contextConductionInd="true">
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.1.31"/>
+                  <templateId root="2.16.840.1.113883.10.20.9.8"/>
+                  <id root="1.2.208.184" extension="aa2386d0-79ea-11e3-981f-0800200c9a66" assigningAuthorityName="MedCom"/>
+                  <code nullFlavor="NI" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                    <translation code="NPU03804" codeSystem="1.2.208.176.2.1" displayName="Legeme masse; Pt" codeSystemName="NPU terminologien"/>
+                  </code>
+                  <statusCode code="completed"/>
+                  <value unit="kg" value="77.5" xsi:type="PQ"/>
+                  <methodCode code="POT" codeSystem="1.2.208.184.100.1" displayName="Målt af borger" codeSystemName="MedCom Message Codes"/>
+                  <methodCode code="AUT" codeSystem="1.2.208.184.100.1" displayName="Måling overført automatisk" codeSystemName="MedCom Message Codes"/>
+                </observation>
+              </component>
+            </organizer>
+          </entry>
+          <entry typeCode="COMP" contextConductionInd="true">
+            <organizer classCode="CLUSTER" moodCode="EVN">
+              <templateId root="2.16.840.1.113883.10.20.1.35"/>
+              <statusCode code="completed"/>
+              <effectiveTime value="20140108074500+0100"/>
+              <component typeCode="COMP" contextConductionInd="true">
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.1.31"/>
+                  <templateId root="2.16.840.1.113883.10.20.9.8"/>
+                  <id root="1.2.208.184" extension="aa2386d0-79ea-11e3-981f-0800200c9a66" assigningAuthorityName="MedCom"/>
+                  <code nullFlavor="NI" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                    <translation code="NPU03804" codeSystem="1.2.208.176.2.1" displayName="Legeme masse; Pt" codeSystemName="NPU terminologien"/>
+                  </code>
+                  <statusCode code="completed"/>
+                  <value unit="kg" value="77.0" xsi:type="PQ"/>
+                  <methodCode code="POT" codeSystem="1.2.208.184.100.1" displayName="Målt af borger" codeSystemName="MedCom Message Codes"/>
+                  <methodCode code="AUT" codeSystem="1.2.208.184.100.1" displayName="Måling overført automatisk" codeSystemName="MedCom Message Codes"/>
+                </observation>
+              </component>
+            </organizer>
+          </entry>
+          <entry typeCode="COMP" contextConductionInd="true">
+            <organizer classCode="CLUSTER" moodCode="EVN">
+              <templateId root="2.16.840.1.113883.10.20.1.35"/>
+              <statusCode code="completed"/>
+              <effectiveTime value="20140110081500+0100"/>
+              <component typeCode="COMP" contextConductionInd="true">
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.1.31"/>
+                  <templateId root="2.16.840.1.113883.10.20.9.8"/>
+                  <id root="1.2.208.184" extension="aa2386d0-79ea-11e3-981f-0800200c9a66" assigningAuthorityName="MedCom"/>
+                  <code nullFlavor="NI" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                    <translation code="NPU03804" codeSystem="1.2.208.176.2.1" displayName="Legeme masse; Pt" codeSystemName="NPU terminologien"/>
+                  </code>
+                  <statusCode code="completed"/>
+                  <value unit="kg" value="77.2" xsi:type="PQ"/>
+                  <methodCode code="POT" codeSystem="1.2.208.184.100.1" displayName="Målt af borger" codeSystemName="MedCom Message Codes"/>
+                  <methodCode code="AUT" codeSystem="1.2.208.184.100.1" displayName="Måling overført automatisk" codeSystemName="MedCom Message Codes"/>
+                  <reference typeCode="REFR">
+                    <templateId root="1.2.208.184.6.1"/>
+                    <externalDocument classCode="DOC">
+                      <id root="1.2.208.184" extension="documentIdExtension"/>
+                      <id root="1.2.208.184.5" extension="externalDocumentReference"/>
+                      <code code="q4" codeSystem="2.16.840.1.113883.6.1" displayName="Some-Display-Name"/>
+                    </externalDocument>
+                  </reference>
+                  <reference typeCode="REFR">
+                    <templateId root="1.2.208.184.6.1"/>
+                    <externalObservation classCode="OBS">
+                      <id root="1.2.208.184" extension="documentIdExtension"/>
+                      <id root="1.2.208.184.5" extension="externalDocumentReference"/>
+                      <id root="1.2.208.184.100.2" extension="externalObservation"/>
+                      <code code="q4" codeSystem="2.16.840.1.113883.6.1" displayName="Some-Display-Name"/>
+                    </externalObservation>
+                  </reference>
+                </observation>
+              </component>
+            </organizer>
+          </entry>
+        </section>
+      </component>
+      <component typeCode="COMP" contextConductionInd="true">
+        <section classCode="DOCSECT" moodCode="EVN">
+          <templateId root="2.16.840.1.113883.10.20.1.7"/>
+          <templateId root="2.16.840.1.113883.10.20.9.1"/>
+          <templateId root="1.2.208.184.11.1"/>
+          <code code="46264-8" codeSystem="2.16.840.1.113883.6.1"/>
+          <title>Medical Equipment</title>
+          <text>Medical Equipment</text>
+          <entry typeCode="COMP" contextConductionInd="true">
+            <organizer classCode="CLUSTER" moodCode="EVN">
+              <templateId root="2.16.840.1.113883.10.20.9.4"/>
+              <statusCode code="completed"/>
+              <participant typeCode="SBJ" contextControlCode="OP">
+                <participantRole classCode="MANU">
+                  <templateId root="2.16.840.1.113883.10.20.1.52"/>
+                  <templateId root="2.16.840.1.113883.10.20.9.9"/>
+                  <id root="1.2.208.184.100.3" extension="MCI00001" assigningAuthorityName="MedCom"/>
+                  <playingDevice classCode="DEV" determinerCode="INSTANCE">
+                    <code code="NI" codeSystem="2.16.840.1.113883.6.24" codeSystemName="MDC Dynamic">
+                      <translation code="MCI00001" codeSystem="1.2.208.184.100.3" displayName="Weight" codeSystemName="MedCom Instrument Codes"/>
+                    </code>
+                    <manufacturerModelName>Manufacturer: AD Company / Model: 6121ABT1</manufacturerModelName>
+                    <softwareName>SerialNr: 6121ABT1-987 Rev. 3 / SW Rev. 20144711</softwareName>
+                  </playingDevice>
+                </participantRole>
+              </participant>
+            </organizer>
+          </entry>
+        </section>
+      </component>
+    </structuredBody>
+  </component>
+</ClinicalDocument>

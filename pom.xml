@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.net4care</groupId>
   <artifactId>xds-connector</artifactId>
-  <version>0.0.6-SNAPSHOT</version>
+  <version>0.0.7</version>
   <name>XDS Connector</name>
   <packaging>jar</packaging>
 

@@ -29,30 +29,41 @@ public class COID {
 
     public static class DK {
         // See http://svn.medcom.dk/svn/drafts/Standarder/IHE/OID/
-
-        public static final String ClassCode = "2.16.840.1.113883.3.4208.100.9";
+        public static final String ClassCode = "1.2.208.184.100.9";
         public static final String ClassCode_ClinicalReport_Code = "001";
         public static final String ClassCode_ClinicalReport_DisplayName = "Klinisk rapport";
 
-        public static final String FormatCode = "2.16.840.1.113883.3.4208.100.10";
+        public static final String FormatCode = "1.2.208.184.100.10";
         public static final String FormatCode_PHMR_Code = "urn:ad:dk:medcom:phmr:full";
         public static final String FormatCode_PHMR_DisplayName = "DK PHMR schema";
+        
+        public static final String FormatCode_QRD_Code = "urn:ad:dk:medcom:qrd:full";
+        public static final String FormatCode_QRD_DisplayName = "DK QRD schema";
+        
+        public static final String FormatCode_QFDD_Code = "urn:ad:dk:medcom:qfdd:full";
+        public static final String FormatCode_QFDD_DisplayName = "DK QFDD schema";
 
         public static final String TemplateId_PHMR = "1.2.208.184.11.1";
         public static final String TemplateId_PHMR_OLD = "2.16.840.1.113883.3.4208.11.1";
         public static final String TemplateId_QRD = "1.2.208.184.13.1";
-        public static final String TemplateId_QFDD = "2.16.840.1.113883.10.20.32";
+        public static final String TemplateId_QFDD = "1.2.208.184.12.1";
 
         public static final String TypeCode = "2.16.840.1.113883.6.1";
         public static final String TypeCode_PHMR_Code = "53576-5";
         public static final String TypeCode_PHMR_DisplayName = "Personal health monitoring report Document";
+        
+        public static final String TypeCode_QRD_Code = "74465-6";
+        public static final String TypeCode_QRD_DisplayName = "Questionnaire Response Document";
+        
+        public static final String TypeCode_QFDD_Code = "74468-0";
+        public static final String TypeCode_QFDD_DisplayName = "Questionnaire Form Definition Document";
 
         public static final String LanguageCode = "2.16.840.1.113883.6.121";
         public static final String LanguageCode_DaDk_Code = "da-DK";
         public static final String LanguageCode_DaDk_DisplayName = "Danish-Denmark";
 
-        public static final String FacilityCodeSystem = "2.16.840.1.113883.3.4208.100.11";
-        public static final String FacilityCode = "22232009";
+        public static final String FacilityCodeSystem = "2.16.840.1.113883.6.96";
+        public static final String FacilityCode = "22232009"; // Hospital
 
         public static String facilityTypeCode2DisplayName(String code) {
             switch (code) {
