@@ -1,37 +1,40 @@
 package org.net4care.xdsconnector;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerException;
 
+import org.net4care.xdsconnector.Utilities.CodedValue;
 import org.net4care.xdsconnector.Utilities.MtomMessageCallback;
 import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
-import org.net4care.xdsconnector.service.*;
+import org.net4care.xdsconnector.service.ExtrinsicObjectType;
+import org.net4care.xdsconnector.service.IdentifiableType;
+import org.net4care.xdsconnector.service.ObjectFactory;
+import org.net4care.xdsconnector.service.ProvideAndRegisterDocumentSetRequestType;
+import org.net4care.xdsconnector.service.RegistryResponseType;
+import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType;
 import org.net4care.xdsconnector.service.RetrieveDocumentSetRequestType.DocumentRequest;
+import org.net4care.xdsconnector.service.RetrieveDocumentSetResponseType;
+import org.net4care.xdsconnector.service.SubmitObjectsRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.ws.WebServiceMessage;
-import org.springframework.ws.client.core.WebServiceMessageCallback;
-import org.springframework.ws.client.core.WebServiceMessageExtractor;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
-import org.springframework.ws.support.MarshallingUtils;
 import org.w3c.dom.Document;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
@@ -45,6 +48,16 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
 
   @Value("${xds.homeCommunityId}")
   private String homeCommunityId;
+  
+  private static JAXBContext jaxbContext = createJAXBContext();
+  
+  private static JAXBContext createJAXBContext() {
+    try {
+      return JAXBContext.newInstance(Document.class);
+    } catch(JAXBException jx) {
+      return null;
+    }
+  }
 
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -74,9 +87,9 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
 	}
 
-  public RegistryResponseType provideAndRegisterCDADocument(Document cda) {
+  public RegistryResponseType provideAndRegisterCDADocument(Document cda, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     try {
-      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
+      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityType, practiceSettingsCode);
       JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
       @SuppressWarnings("unchecked")
@@ -90,9 +103,9 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
   }
 
-  public RegistryResponseType provideAndRegisterCDADocument(String cda) {
+  public RegistryResponseType provideAndRegisterCDADocument(String cda, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     try {
-      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda);
+      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityType, practiceSettingsCode);
       JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
       @SuppressWarnings("unchecked")
@@ -106,9 +119,9 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
   }
 
-  public RegistryResponseType provideAndRegisterCDADocuments(List<String> cdas) {
+  public RegistryResponseType provideAndRegisterCDADocuments(List<String> cdas, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     try {
-      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentsRequest(cdas);
+      ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentsRequest(cdas, healthcareFacilityType, practiceSettingsCode);
       JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
       @SuppressWarnings("unchecked")
@@ -116,21 +129,20 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
               .marshalSendAndReceive(requestPayload, new MtomMessageCallback(repositoryUrl, "ProvideAndRegisterDocumentSet-b"));
 
       return result.getValue();
-    }
-    catch (Throwable t) {
+    } catch (Throwable t) {
       throw t;
     }
   }
 
-  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(Document cdaDocument) {
+  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(Document cdaDocument, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
     try {
-      SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
+      SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument, healthcareFacilityType, practiceSettingsCode);
       request.setSubmitObjectsRequest(submitRequest);
 
       ByteArrayOutputStream writer = new ByteArrayOutputStream();
-      Marshaller marshaller = JAXBContext.newInstance(cdaDocument.getClass()).createMarshaller();
+      Marshaller marshaller = jaxbContext.createMarshaller();
       marshaller.marshal(cdaDocument, writer);
 
       ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
@@ -144,7 +156,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     return request;
   }
 
-  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(String cdaString) {
+  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentRequest(String cdaString, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
     try {
@@ -152,7 +164,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
       byte[] bytes = cdaString.getBytes(StandardCharsets.UTF_8);
       Document cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
 
-      SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument);
+      SubmitObjectsRequest submitRequest = new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDA(cdaDocument, healthcareFacilityType, practiceSettingsCode);
       request.setSubmitObjectsRequest(submitRequest);
 
       ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
@@ -167,7 +179,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     return request;
   }
 
-  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentsRequest(List<String> cdaStrings) {
+  protected ProvideAndRegisterDocumentSetRequestType buildProvideAndRegisterCDADocumentsRequest(List<String> cdaStrings, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     ProvideAndRegisterDocumentSetRequestType request = new ProvideAndRegisterDocumentSetRequestType();
 
     try {
@@ -175,7 +187,6 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
       request.setSubmitObjectsRequest(submitRequest);
 
       Map<String, Document> cdaDocuments = new HashMap<String, Document>();
-      //List<Document> cdaDocuments = new ArrayList<Document>();
       for (String cdaString : cdaStrings) {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         byte[] bytes = cdaString.getBytes(StandardCharsets.UTF_8);
@@ -189,8 +200,8 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
         document.setValue(bytes);
         request.getDocument().add(document);
       }
-
-      new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDAs(submitRequest, cdaDocuments);
+      
+      new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDAs(submitRequest, cdaDocuments, healthcareFacilityType, practiceSettingsCode);
     }
     catch (Exception ex) {
       logger.error("", ex);

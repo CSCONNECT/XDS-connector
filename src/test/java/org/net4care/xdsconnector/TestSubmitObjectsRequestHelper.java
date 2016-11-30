@@ -1,26 +1,36 @@
 package org.net4care.xdsconnector;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
-import org.net4care.xdsconnector.service.*;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.util.StringUtils;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.charset.Charset;
-import java.nio.file.Paths;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.Before;
+import org.junit.Test;
+import org.net4care.xdsconnector.Constants.COID;
+import org.net4care.xdsconnector.Utilities.CodedValue;
+import org.net4care.xdsconnector.Utilities.CodedValue.CodedValueBuilder;
+import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
+import org.net4care.xdsconnector.service.ClassificationType;
+import org.net4care.xdsconnector.service.ExternalIdentifierQueryType;
+import org.net4care.xdsconnector.service.ExternalIdentifierType;
+import org.net4care.xdsconnector.service.ExtrinsicObjectType;
+import org.net4care.xdsconnector.service.ObjectFactory;
+import org.net4care.xdsconnector.service.ProvideAndRegisterDocumentSetRequestType;
+import org.net4care.xdsconnector.service.SlotType1;
+import org.springframework.util.StringUtils;
 
 public class TestSubmitObjectsRequestHelper {
 
@@ -34,10 +44,21 @@ public class TestSubmitObjectsRequestHelper {
     private SubmitObjectsRequestHelper helper = new SubmitObjectsRequestHelper("1.2.3", "1.2.3");
     private ObjectFactory factory = new ObjectFactory();
     private Calendar calender = new GregorianCalendar();
+    
+    private JAXBContext jaxbContext = createjaxbContext();
 
     @Before
     public void setup() {
         XMLUnit.setIgnoreWhitespace(true);
+    }
+
+    private JAXBContext createjaxbContext() {
+      try {
+        return JAXBContext.newInstance(SlotType1.class, ProvideAndRegisterDocumentSetRequestType.class,
+            ExternalIdentifierQueryType.class, ClassificationType.class);
+      } catch (JAXBException e) {
+        return null;
+      }
     }
 
     @Test
@@ -48,12 +69,13 @@ public class TestSubmitObjectsRequestHelper {
             java.net.URL url = getClass().getClassLoader().getResource(path);
             List<String> lines = Files.readAllLines(Paths.get(url.toURI()), Charset.forName("UTF-8"));
             String cda = StringUtils.collectionToDelimitedString(lines, "\n");
-
-            ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda);
+            CodedValue healthcareFacilityTypeCode = new CodedValueBuilder().setCode(COID.DK.FacilityCode).setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName(COID.DK.facilityTypeCode2DisplayName(COID.DK.FacilityCode)).build();
+            CodedValue practiceSettingCode = new CodedValueBuilder().setCode("408443003").setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName("almen medicin").build();
+            ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityTypeCode, practiceSettingCode);
             JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
-            String xml = serialize(requestPayload, request.getClass());
-            //System.out.println(xml);
+//            String xml = serialize(requestPayload, request.getClass());
+//            System.out.println(xml);
         } catch (Exception ex) {
             assertTrue("Unexpected exception: " + ex.getMessage(), false);
         }
@@ -113,7 +135,7 @@ public class TestSubmitObjectsRequestHelper {
                 "  " + xmlns6 + ">\n" +
                 "  <Slot name=\"codingScheme\">\n" +
                 "    <ValueList>\n" +
-                "      <Value>2.16.840.1.113883.3.4208.100.9</Value>\n" +
+                "      <Value>1.2.208.184.100.9</Value>\n" +
                 "    </ValueList>\n" +
                 "  </Slot>\n" +
                 "  <Name>\n" +
@@ -191,7 +213,7 @@ public class TestSubmitObjectsRequestHelper {
                 "  " + xmlns6 + ">\n" +
                 "  <Slot name=\"codingScheme\">\n" +
                 "    <ValueList> \n" +
-                "      <Value>2.16.840.1.113883.3.4208.100.10</Value>\n" +
+                "      <Value>1.2.208.184.100.10</Value>\n" +
                 "    </ValueList>\n" +
                 "  </Slot>\n" +
                 "  <Name>\n" +
@@ -203,13 +225,13 @@ public class TestSubmitObjectsRequestHelper {
 
     @Test
     public void createHealthcareFacilityTypeCode() {
-        ClassificationType clstype = helper.createHealthcareFacilityTypeCode("", "22232009", "2.16.840.1.1133883.3.4208.100.11", "hospital");
+        ClassificationType clstype = helper.createHealthcareFacilityTypeCode("", "22232009", "2.16.840.1.113883.6.96", "hospital");
         String control = "<Classification\n" +
                 "  classificationScheme=\"urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1\"\n" +
                 "  classifiedObject=\"\"\n" +
                 "  id=\"" + clstype.getId() + "\"\n" +
                 "  objectType=\"urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification\"\n" +
-                "  nodeRepresentation=\"2.16.840.1.1133883.3.4208.100.11\"\n" +
+                "  nodeRepresentation=\"2.16.840.1.113883.6.96\"\n" +
                 "  " + xmlns6 + ">\n" +
                 "  <Slot name=\"codingScheme\">\n" +
                 "    <ValueList>\n" +
@@ -302,7 +324,7 @@ public class TestSubmitObjectsRequestHelper {
         SlotType1 slot = helper.createSourcePatientId("2.16.840.1.113883.3.4208.100.2", "2512484916");
         String control = "<Slot name=\"sourcePatientId\" " + xmlns + ">\n" +
                 "  <ValueList>\n" +
-                "    <Value>PID-3|2512484916^^^&amp;2.16.840.1.113883.3.4208.100.2&amp;ISO</Value>\n" +
+                "    <Value>2512484916^^^&amp;2.16.840.1.113883.3.4208.100.2&amp;ISO</Value>\n" +
                 "  </ValueList>\n" +
                 "</Slot>";
         assertXMLEqual(control, factory.createSlot(slot));
@@ -347,8 +369,7 @@ public class TestSubmitObjectsRequestHelper {
         ExternalIdentifierType extid = helper.createDocumentEntryUniqueId("DocumentEntry01", "2.16.840.1.113883.3.4208", "aa2386d0-79ea-11e3-981f-0800200c9a66");
         String control = "<ExternalIdentifier\n" +
                 "  identificationScheme=\"urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab\"\n" +
-                // TODO: this tests the reduced extension size
-                "  value=\"2.16.840.1.113883.3.4208^aa2386d079ea11e3\" \n" +
+                "  value=\"2.16.840.1.113883.3.4208^aa2386d079ea11e3981f0800200c9a66\" \n" +
                 "  id=\"" + extid.getId() + "\"\n" +
                 "  objectType=\"urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier\"\n" +
                 "  registryObject=\"DocumentEntry01\"\n" +
@@ -373,8 +394,7 @@ public class TestSubmitObjectsRequestHelper {
 
     private String serialize(Object object, Class clazz) {
         try {
-            JAXBContext context = JAXBContext.newInstance(clazz);
-            Marshaller marshaller = context.createMarshaller();
+            Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             StringWriter writer = new StringWriter();

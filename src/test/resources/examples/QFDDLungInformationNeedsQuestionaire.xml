@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="cda.xsl"?>
+<ClinicalDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:hl7-org:v3" classCode="DOCCLIN" moodCode="EVN">
+  <realmCode code="DK"/>
+  <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
+  <templateId root="1.2.208.184.12.1"/>
+  <templateId root="1.2.208.184.12.1.1.1"/>
+  <id root="1.2.208.184" extension="9d4e849a-ed09-4a47-99c1-7f47b44ee14e" assigningAuthorityName="MedCom"/>
+  <code code="74468-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Form Definition Document"/>
+  <title>Spørgeskema til patienter med kronisk lungesygdom</title>
+  <effectiveTime value="20140113100000+0100"/>
+  <confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25"/>
+  <languageCode code="da-DK"/>
+  <recordTarget typeCode="RCT" contextControlCode="OP">
+    <patientRole classCode="PAT">
+      <id nullFlavor="NI"/>
+    </patientRole>
+  </recordTarget>
+  <author typeCode="AUT" contextControlCode="OP">
+    <time value="20140113100000+0100"/>
+    <assignedAuthor classCode="ASSIGNED">
+      <id extension="null" root="1.2.208.176.1.2" assigningAuthorityName="CPR"/>
+      <code code="SELF" displayName="Self" codeSystem="2.16.840.1.113883.5.111" codeSystemName="HL7 Role code"/>
+      <addr use="WP">
+        <streetAddressLine>Hjertemedicinsk afdeling B</streetAddressLine>
+        <streetAddressLine>Valdemarsgade 53</streetAddressLine>
+        <postalCode>5700</postalCode>
+        <city>Svendborg</city>
+        <country>Danmark</country>
+      </addr>
+      <telecom value="tel:65223344" use="WP"/>
+      <assignedPerson classCode="PSN" determinerCode="INSTANCE">
+        <name>
+          <given>Anders</given>
+          <family>Andersen</family>
+        </name>
+      </assignedPerson>
+      <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+        <name>Odense Universitetshospital - Svendborg Sygehus</name>
+        <telecom nullFlavor="NI"/>
+        <addr use="WP">
+          <streetAddressLine nullFlavor="NI"/>
+        </addr>
+      </representedOrganization>
+    </assignedAuthor>
+  </author>
+  <custodian typeCode="CST">
+    <assignedCustodian classCode="ASSIGNED">
+      <representedCustodianOrganization classCode="ORG" determinerCode="INSTANCE">
+        <id root="1.2.208.176.1.1" extension="88878685" assigningAuthorityName="CPR"/>
+        <name>Odense Universitetshospital - Svendborg Sygehus</name>
+        <telecom value="tel:65223344" use="WP"/>
+        <addr use="WP">
+          <streetAddressLine>Hjertemedicinsk afdeling B</streetAddressLine>
+          <streetAddressLine>Valdemarsgade 53</streetAddressLine>
+          <postalCode>5700</postalCode>
+          <city>Svendborg</city>
+          <country>Danmark</country>
+        </addr>
+      </representedCustodianOrganization>
+    </assignedCustodian>
+  </custodian>
+  <component typeCode="COMP" contextConductionInd="true">
+    <structuredBody classCode="DOCBODY" moodCode="EVN">
+      <component typeCode="COMP" contextConductionInd="true">
+        <section classCode="DOCSECT" moodCode="EVN">
+          <templateId root="2.16.840.1.113883.10.20.32.2.1"/>
+          <code code="74468-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+          <title>Spørgeskema</title>
+          <text>Spørgeskema</text>
+          <entry typeCode="DRIV" contextConductionInd="true">
+            <organizer classCode="BATTERY" moodCode="EVN">
+              <templateId root="2.16.840.1.113883.10.20.32.4.1"/>
+              <statusCode code="COMPLETED"/>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="1"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="d3f740b3-d2d2-4266-94d8-e8e5df426c2f" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="1" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Kender du navnet på din lungesygdom?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="2"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="72805673-3e26-4422-ae95-331e1f5bdcc7" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="2" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske fortalt dig, hvordan denne sygdom påvirker dine lunger?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="3"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="2682b1de-dcf3-46c1-b998-4dd82dc2c520" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="3" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske fortalt dig, hvad der sandsynligvis vil ske i fremtiden?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="4"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="88519247-d6e1-4015-b99b-7763e0bc430b" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="4" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvilke af de følgende udsagn beskriver bedst, hvad der vil ske med dig i løbet af de nærmeste år?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Nu, da min sygdom bliver behandlet, får jeg det nok bedre" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Nu, da min sygdom bliver behandlet, bliver jeg nok ved med at have det, som jeg har det nu" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Jeg får det dårligere" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A4" codeSystem="1.2.208.184.100.2" displayName="Jeg ved det ikke" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="5"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="1c5ec3bd-29b2-4e8d-938b-82302f3f9ade" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="5" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske forklaret dig grunden til, at du skal bruge inhalator eller tage medicin?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="6"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="95871f79-4099-43e3-890a-b3f563406034" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="6" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Bestræber du dig på at bruge din inhalator eller tage din medicin, nøjagtigt som en læge eller sygeplejerske har lært dig?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="7"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="ca3f8d34-f998-4f99-a9f9-005e06088795" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="7" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Er du tilfreds med den information, læger og sygeplejersker har givet dig om dine inhalatorer og din medicin?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Jeg føler mig velinformeret om det, jeg skal vide" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Jeg forstår alt, hvad jeg har fået at vide, men ville gerne vide mere" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Jeg er lidt usikker mht. min medicin" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A4" codeSystem="1.2.208.184.100.2" displayName="Jeg er meget usikker mht. min medicin" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="8"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="95415e61-85b2-481c-bae5-8c107ec0c39d" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="8" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvilket udsagn beskriver bedst, hvad du har fået at vide, at du skal gøre, hvis din vejrtrækning bliver mere besværet (fx tage to pust i stedet for et)?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Jeg har fået at vide, hvad jeg skal gøre, og lægen/sygeplejersken har givet mig en skriftlig vejledning" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Jeg har fået det at vide, men det er ikke skrevet ned" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Jeg har ikke fået det at vide, men jeg ved, hvad jeg skal gøre" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A4" codeSystem="1.2.208.184.100.2" displayName="Jeg har ikke fået det at vide, og jeg ved ikke, hvad jeg skal gøre" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="9"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="8bdfd8f7-6299-4ec4-b787-617b760ba273" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="9" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har du fået at vide, hvornår du skal ringe efter en ambulance, hvis din vejrtrækning bliver mere besværet?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Jeg har fået at vide, hvad jeg skal gøre, og lægen/sygeplejersken har givet mig en skriftlig vejledning" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Jeg har fået det at vide, men det er ikke skrevet ned" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Jeg har ikke fået det at vide, men jeg ved, hvad jeg skal gøre" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A4" codeSystem="1.2.208.184.100.2" displayName="Jeg har ikke fået det at vide, og jeg er usikker på, hvornår jeg skal ringe efter en ambulance" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="10"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="ac12e5ba-b76f-4e3a-a7f8-9232b09da909" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="10" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvilket udsagn beskriver dig bedst?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Aldrig røget (gå til spørgsmål 13)" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Tidligere røget, men gør det ikke nu (gå til spørgsmål 13)" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Ryger stadig (gå til spørgsmål 11)" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="11"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="986a056b-234d-46b7-8499-3626a56deb9a" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="11" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske rådet dig til at holde op med at ryge?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                  <precondition typeCode="PRCN">
+                    <templateId root="2.16.840.1.113883.10.20.32.4.4"/>
+                    <criterion classCode="OBS" moodCode="EVN.CRT">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.3"/>
+                      <code code="10" codeSystem="1.2.208.184.100.2" CodeSystemName="Medcom prompt table"/>
+                      <value xsi:type="CE" code="A3" displayName="Ryger stadig (gå til spørgsmål 11)"/>
+                    </criterion>
+                  </precondition>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="12"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="6368c7c4-bc12-46f8-bbf0-a0e7999768f7" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="12" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske tilbudt dig hjælp til at holde op med at ryge? (fx givet dig nikotintyggegummi, nikotinplaster eller en henvisning til en rygestopklinik)</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                  <precondition typeCode="PRCN">
+                    <templateId root="2.16.840.1.113883.10.20.32.4.4"/>
+                    <criterion classCode="OBS" moodCode="EVN.CRT">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.3"/>
+                      <code code="10" codeSystem="1.2.208.184.100.2" CodeSystemName="Medcom prompt table"/>
+                      <value xsi:type="CE" code="A3" displayName="Ryger stadig (gå til spørgsmål 11)"/>
+                    </criterion>
+                  </precondition>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="13"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="5bc600bc-05fa-4b3b-8f61-f2d919336237" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="13" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske fortalt dig, at du skal forsøge at dyrke motion (fx almindelig gang, rask gang og andre former for motion)?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                  <precondition typeCode="PRCN">
+                    <templateId root="2.16.840.1.113883.10.20.32.4.4"/>
+                    <criterion classCode="OBS" moodCode="EVN.CRT">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.3"/>
+                      <code code="10" codeSystem="1.2.208.184.100.2" CodeSystemName="Medcom prompt table"/>
+                      <value xsi:type="CE" code="A1" displayName="Aldrig røget (gå til spørgsmål 13)"/>
+                    </criterion>
+                  </precondition>
+                  <precondition typeCode="PRCN">
+                    <templateId root="2.16.840.1.113883.10.20.32.4.4"/>
+                    <criterion classCode="OBS" moodCode="EVN.CRT">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.3"/>
+                      <code code="10" codeSystem="1.2.208.184.100.2" CodeSystemName="Medcom prompt table"/>
+                      <value xsi:type="CE" code="A2" displayName="Tidligere røget, men gør det ikke nu (gå til spørgsmål 13)"/>
+                    </criterion>
+                  </precondition>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="14"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="14d4a38e-ae4e-4936-be26-746f728a8b73" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="14" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har en læge eller sygeplejerske fortalt dig, hvor meget motion (fx almindelig gang, rask gang og andre former for motion), du skal dyrke?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Ja, og jeg ved, hvad jeg skal gøre" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Ja, men jeg er usikker på, hvad jeg skal gøre" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Ja, men jeg er ikke i stand til at gøre det" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A4" codeSystem="1.2.208.184.100.2" displayName="Nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="15"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="3598a69f-5fa0-4028-b54b-bdabd3ce5c1d" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="15" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvor meget motion dyrker du?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Så lidt som muligt" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Jeg gør en indsats" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Jeg anstrenger mig, så meget jeg kan" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="16"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="fb5ec171-931d-4f09-ba07-4147aa3addb2" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="16" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvad har læger eller sygeplejersker fortalt dig om dine kost- og spisevaner? (Sæt kryds for hvert svar der passer for dig)</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="Ingenting" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="Tab dig eller tag på" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A3" codeSystem="1.2.208.184.100.2" displayName="Spis sundt" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A4" codeSystem="1.2.208.184.100.2" displayName="Spise mange små måltider dagligt (fx 6 små måltider i stedet for 3 store)" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="4"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="17"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.9"/>
+                  <id extension="c89fb284-1a68-4092-b76f-0812a252ce83" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="17" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Har du spørgsmål eller kommentarer ang. din lungesygdom? Hvis du har så skriv dem herunder:</originalText>
+                  </code>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="18"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="e6beb2b6-b5a8-414f-84b8-12247bd5bf5a" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="18" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Bor du alene?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="ja" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="nej" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="19"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.8"/>
+                  <id extension="55e31ac5-6550-40e1-baba-6a04fe00ee02" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="19" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvad er dit køn?</originalText>
+                  </code>
+                  <value xsi:type="CE" code="A1" codeSystem="1.2.208.184.100.2" displayName="mand" codeSystemName="Medcom prompt table"/>
+                  <value xsi:type="CE" code="A2" codeSystem="1.2.208.184.100.2" displayName="kvinde" codeSystemName="Medcom prompt table"/>
+                  <entryRelationship typeCode="SUBJ" contextConductionInd="true">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.32.4.20"/>
+                      <code code="74467-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
+                      <value xsi:type="IVL_INT">
+                        <low value="1"/>
+                        <high value="1"/>
+                      </value>
+                    </observation>
+                  </entryRelationship>
+                </observation>
+              </component>
+              <component typeCode="COMP" contextConductionInd="true">
+                <sequenceNumber value="20"/>
+                <observation classCode="OBS" moodCode="EVN">
+                  <templateId root="2.16.840.1.113883.10.20.32.4.9"/>
+                  <id extension="94dd47dd-0b62-4012-babf-177510c3a211" root="1.2.208.184.100.2" assigningAuthorityName="MedCom"/>
+                  <code code="20" codeSystem="1.2.208.184.100.2" displayName="" codeSystemName="Medcom prompt table">
+                    <originalText>Hvilket år er du født?</originalText>
+                  </code>
+                </observation>
+              </component>
+            </organizer>
+          </entry>
+        </section>
+      </component>
+    </structuredBody>
+  </component>
+</ClinicalDocument>

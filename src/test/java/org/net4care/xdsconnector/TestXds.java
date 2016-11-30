@@ -1,11 +1,39 @@
 package org.net4care.xdsconnector;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.xml.bind.JAXBElement;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.net4care.xdsconnector.Constants.COID;
 import org.net4care.xdsconnector.Constants.XDSStatusValues;
-import org.net4care.xdsconnector.Utilities.*;
-import org.net4care.xdsconnector.service.*;
+import org.net4care.xdsconnector.Utilities.CodedValue;
+import org.net4care.xdsconnector.Utilities.CodedValue.CodedValueBuilder;
+import org.net4care.xdsconnector.Utilities.FindDocumentsQueryBuilder;
+import org.net4care.xdsconnector.Utilities.FindSubmissionSetsQueryBuilder;
+import org.net4care.xdsconnector.Utilities.GetAssociationsQueryBuilder;
+import org.net4care.xdsconnector.Utilities.GetDocumentsQueryBuilder;
+import org.net4care.xdsconnector.Utilities.GetSubmissionSetAndContentsQueryBuilder;
+import org.net4care.xdsconnector.Utilities.GetSubmissionSetsQueryBuilder;
+import org.net4care.xdsconnector.Utilities.PrettyPrinter;
+import org.net4care.xdsconnector.service.AdhocQueryResponseType;
+import org.net4care.xdsconnector.service.ExternalIdentifierType;
+import org.net4care.xdsconnector.service.ExtrinsicObjectType;
+import org.net4care.xdsconnector.service.IdentifiableType;
+import org.net4care.xdsconnector.service.RegistryPackageType;
+import org.net4care.xdsconnector.service.RegistryResponseType;
+import org.net4care.xdsconnector.service.RetrieveDocumentSetResponseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +43,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.util.StringUtils;
-import org.w3c.dom.Document;
-
-import javax.validation.constraints.AssertTrue;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ConnectorConfiguration.class)
@@ -93,7 +105,9 @@ public class TestXds {
             // make a new unique id
             String uuid = UUID.randomUUID().toString();
             providedDocument = providedDocument.replace(cdaDocumentExUUID, uuid);
-            RegistryResponseType provideResponse = xdsRepositoryConnector.provideAndRegisterCDADocument(providedDocument);
+            CodedValue healthcareFacilityTypeCode = new CodedValueBuilder().setCode(COID.DK.FacilityCode).setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName(COID.DK.facilityTypeCode2DisplayName(COID.DK.FacilityCode)).build();
+            CodedValue practiceSettingCode = new CodedValueBuilder().setCode("408443003").setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName("almen medicin").build();
+            RegistryResponseType provideResponse = xdsRepositoryConnector.provideAndRegisterCDADocument(providedDocument, healthcareFacilityTypeCode, practiceSettingCode);
             logger.debug(PrettyPrinter.prettyPrint(provideResponse));
             Assert.assertTrue(provideResponse.getStatus().equals(XDSStatusValues.AdhocQueryResponse.Success));
 
@@ -148,7 +162,9 @@ public class TestXds {
             providedDocuments.add(providedDocument1);
             providedDocuments.add(providedDocument2);
 
-            RegistryResponseType provideResponse = xdsRepositoryConnector.provideAndRegisterCDADocuments(providedDocuments);
+            CodedValue healthcareFacilityTypeCode = new CodedValueBuilder().setCode(COID.DK.FacilityCode).setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName(COID.DK.facilityTypeCode2DisplayName(COID.DK.FacilityCode)).build();
+            CodedValue practiceSettingCode = new CodedValueBuilder().setCode("408443003").setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName("almen medicin").build();
+            RegistryResponseType provideResponse = xdsRepositoryConnector.provideAndRegisterCDADocuments(providedDocuments, healthcareFacilityTypeCode, practiceSettingCode);
 
             logger.debug(PrettyPrinter.prettyPrint(provideResponse));
             Assert.assertTrue(provideResponse.getStatus().equals(XDSStatusValues.AdhocQueryResponse.Success));
