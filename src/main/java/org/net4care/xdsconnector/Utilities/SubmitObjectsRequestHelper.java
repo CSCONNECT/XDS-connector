@@ -32,38 +32,35 @@ public class SubmitObjectsRequestHelper {
     public SubmitObjectsRequest buildFromCDA(Document cda, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
         // TODO: should these be parameterized?
         // Or symbolic (meaning the registry will generate the ids - see http://wiki.ihe.net/index.php?title=Annotated_ProvideAndRegister.b_Transaction)
-        String associatedId = prefixUUID(UUID.randomUUID().toString()); //id of the ExtrinsicObject that corresponds to the doc.entry in the submission
-        String submissionSetId = UUID.randomUUID().toString();
+        String documentEntryId = CodeUtil.prefixUUID(UUID.randomUUID().toString()); //id of the ExtrinsicObject that corresponds to the doc.entry in the submission
+        String submissionSetId = CodeUtil.prefixUUID(UUID.randomUUID().toString());
 
         SubmitObjectsRequest request = new SubmitObjectsRequest();
         RegistryObjectListType registry = factory.createRegistryObjectListType();
         request.setRegistryObjectList(registry);
 
-        addStableDocumentEntry(registry, cda, associatedId, healthcareFacilityType, practiceSettingsCode);
+        addStableDocumentEntry(registry, cda, documentEntryId, healthcareFacilityType, practiceSettingsCode);
         addRegistryPackage(registry, cda, submissionSetId);
         addClassificationNode(registry, submissionSetId);
-        addAssociation(registry, submissionSetId, associatedId);
+        addAssociation(registry, submissionSetId, documentEntryId);
 
         return request;
     }
 
     //cdas is expected to be a list of DocumentEntry ids (UUID or symbolic) paired with the CDAs the Doc.Entry should reference
-    public SubmitObjectsRequest buildFromCDAs(SubmitObjectsRequest request, Map<String, Document> cdas, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
-        String submissionSetId = UUID.randomUUID().toString();
+    public SubmitObjectsRequest buildFromCDAs(SubmitObjectsRequest request, List<IdDocumentPair> idDocumentPairs, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
+        String submissionSetId = CodeUtil.prefixUUID(UUID.randomUUID().toString());
 
         RegistryObjectListType registry = factory.createRegistryObjectListType();
         request.setRegistryObjectList(registry);
 
-        for (Map.Entry<String, Document> entry : cdas.entrySet()) {
-            String id = prefixUUID(entry.getKey());
-            Document cda = entry.getValue();
-
-            addStableDocumentEntry(registry, cda, id, healthcareFacilityType, practiceSettingsCode);
-            addAssociation(registry, submissionSetId, id);
+        for (IdDocumentPair idDocumentPair : idDocumentPairs) {
+            addStableDocumentEntry(registry,idDocumentPair.getCdaDocument(),idDocumentPair.getDocumentEntryId(), healthcareFacilityType, practiceSettingsCode);
+            addAssociation(registry, submissionSetId,idDocumentPair.getDocumentEntryId());
         }
 
         //Build SubmissionSet metadata from random CDA in map (map is unordered)
-        Document randomCDA = cdas.entrySet().iterator().next().getValue();
+        Document randomCDA = idDocumentPairs.get(0).getCdaDocument();
         addRegistryPackage(registry, randomCDA, submissionSetId);
         addClassificationNode(registry, submissionSetId);
 
@@ -83,7 +80,8 @@ public class SubmitObjectsRequestHelper {
         addSourcePatientId(documentEntry, cda);
         addSourcePatientInfo(documentEntry, cda);
         addLegalAuthenticator(documentEntry, cda);
-
+        
+        addAuthor(documentEntry, cda, CUUID.DocumentEntry.authorId, associatedId);
         addFormatCode(documentEntry, cda, associatedId);
         addClassCode(documentEntry, associatedId);
         addTypeCode(documentEntry, cda, associatedId);
@@ -107,7 +105,7 @@ public class SubmitObjectsRequestHelper {
 
         addSubmissionTime(registryPackage);
 
-        addAuthor(registryPackage, cda, submissionSetId);
+        addAuthor(registryPackage, cda, CUUID.SubmissionSet.authorId, submissionSetId);
         addContentTypeCode(cda, registryPackage, submissionSetId);
 
         addSubmissionSetUniqueId(registryPackage, cda, submissionSetId);
@@ -120,7 +118,7 @@ public class SubmitObjectsRequestHelper {
     public void addClassificationNode(RegistryObjectListType registry, String submissionSetId) {
         ClassificationType classification = factory.createClassificationType();
         classification.setObjectType("urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification");
-        classification.setId(java.util.UUID.randomUUID().toString());
+        classification.setId(CodeUtil.prefixUUID(UUID.randomUUID().toString()));
         classification.setClassifiedObject(submissionSetId);
         classification.setClassificationNode(CUUID.SubmissionSet.classificationNode);
         registry.getIdentifiable().add(factory.createClassification(classification));
@@ -129,7 +127,7 @@ public class SubmitObjectsRequestHelper {
     public void addAssociation(RegistryObjectListType registry, String sourceId, String targetId) {
         AssociationType1 association = factory.createAssociationType1();
         association.setAssociationType("urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember");
-        association.setId(UUID.randomUUID().toString());
+        association.setId(CodeUtil.prefixUUID(UUID.randomUUID().toString()));
         association.setSourceObject(sourceId);
         association.setTargetObject(targetId);
         association.getSlot().add(createSlot("SubmissionSetStatus", XDSStatusValues.SubmissionSet.Original)); //See http://ihewiki.wustl.edu/wiki/index.php/XDS-FAQ_2#SubmissionSetStatus_attribute_of_a_Submission_Set
@@ -145,15 +143,15 @@ public class SubmitObjectsRequestHelper {
         extobj.setMimeType("text/xml");
         extobj.setId(associatedId);
         extobj.setName(createInternationalString(title));
-        extobj.setHome(prefixOID(homeCommunityId));
+        extobj.setHome(CodeUtil.prefixOID(homeCommunityId));
         extobj.setStatus(XDSStatusValues.DocumentEntry.Approved);
         extobj.setDescription(createInternationalString(title));
         return extobj;
     }
 
     // 2.2.1 author, mandatory
-    public void addAuthor(RegistryPackageType registryPackage, Document cda, String submissionSetId) {
-        ClassificationType authorClassification = createClassification(CUUID.SubmissionSet.authorId, submissionSetId, "", null);
+    public void addAuthor(RegistryObjectType registryPackage, Document cda, String classificationScheme, String classifiedObject) {
+        ClassificationType authorClassification = createClassification(classificationScheme, classifiedObject, "", null);
         addAuthorInstitution(authorClassification, cda);
         addAuthorPerson(authorClassification, cda);
         registryPackage.getClassification().add(authorClassification);
@@ -469,7 +467,9 @@ public class SubmitObjectsRequestHelper {
         String patientGender = getString(cda, "ClinicalDocument/recordTarget/patientRole/patient/administrativeGenderCode/@code");
 
         List<String> values = new ArrayList<String>();
-        values.add(String.format("%s^%s^%s^^^%s^%s", patientLastName, patientFirstName, patientMiddleName, patientBirthTime.substring(0, 8), patientGender));
+        values.add(String.format("PID-5|%s^%s^%s^^^", patientLastName, patientFirstName, patientMiddleName));
+        values.add(String.format("PID-7|%s", patientBirthTime.substring(0, 8)));
+        values.add(String.format("PID-8|%s", patientGender));
         documentEntry.getSlot().add(createSlot("sourcePatientInfo", values.toArray(new String[0])));
     }
 
@@ -544,16 +544,6 @@ public class SubmitObjectsRequestHelper {
     //
     // private methods
     //
-    private String prefixOID(String id) {
-        if (id == null) id = "";
-        return (id.startsWith("urn:oid:")) ? id : "urn:oid:" + id;
-    }
-
-    private String prefixUUID(String id) {
-        if (id == null) id = "";
-        return (id.startsWith("urn:uuid:")) ? id : "urn:uuid:" + id;
-    }
-
     private String getString(Document cda, String exp) {
         try {
             return (String) xpath.evaluate(exp, cda, XPathConstants.STRING);
@@ -620,8 +610,8 @@ public class SubmitObjectsRequestHelper {
     private ClassificationType createClassification(String scheme, String object, String nodeRep, String name, String... values) {
         ClassificationType classification = factory.createClassificationType();
         classification.setObjectType("urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification");
-        classification.setId(java.util.UUID.randomUUID().toString());
-        classification.setClassificationScheme(prefixUUID(scheme));
+        classification.setId(CodeUtil.prefixUUID(UUID.randomUUID().toString()));
+        classification.setClassificationScheme(CodeUtil.prefixUUID(scheme));
         classification.setClassifiedObject(object);
         if (nodeRep != null) classification.setNodeRepresentation(nodeRep);
         if (name != null) classification.setName(createInternationalString(name));
@@ -643,9 +633,9 @@ public class SubmitObjectsRequestHelper {
     // </rim:ExternalIdentifier>
     private ExternalIdentifierType createExternalIdentifier(String idScheme, String registryObject, String name, String value) {
         ExternalIdentifierType externalIdentifier = factory.createExternalIdentifierType();
-        externalIdentifier.setId(java.util.UUID.randomUUID().toString());
+        externalIdentifier.setId(CodeUtil.prefixUUID(UUID.randomUUID().toString()));
         externalIdentifier.setObjectType("urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier");
-        externalIdentifier.setIdentificationScheme(prefixUUID(idScheme));
+        externalIdentifier.setIdentificationScheme(CodeUtil.prefixUUID(idScheme));
         if (registryObject != null) externalIdentifier.setRegistryObject(registryObject);
         externalIdentifier.setName(createInternationalString(name));
         externalIdentifier.setValue(value);

@@ -2,11 +2,9 @@ package org.net4care.xdsconnector;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
@@ -16,7 +14,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.net4care.xdsconnector.Utilities.CodeUtil;
 import org.net4care.xdsconnector.Utilities.CodedValue;
+import org.net4care.xdsconnector.Utilities.IdDocumentPair;
 import org.net4care.xdsconnector.Utilities.MtomMessageCallback;
 import org.net4care.xdsconnector.Utilities.SubmitObjectsRequestHelper;
 import org.net4care.xdsconnector.service.ExtrinsicObjectType;
@@ -186,22 +186,22 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
       SubmitObjectsRequest submitRequest = new SubmitObjectsRequest();
       request.setSubmitObjectsRequest(submitRequest);
 
-      Map<String, Document> cdaDocuments = new HashMap<String, Document>();
+      List<IdDocumentPair> idDocumentPairs = new ArrayList<IdDocumentPair>();
       for (String cdaString : cdaStrings) {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         byte[] bytes = cdaString.getBytes(StandardCharsets.UTF_8);
         Document cdaDocument = builder.parse(new ByteArrayInputStream(bytes));
 
-        String docEntryId = UUID.randomUUID().toString();
-        cdaDocuments.put(docEntryId, cdaDocument);
+        String documentEntryId = CodeUtil.prefixUUID(UUID.randomUUID().toString());
+        idDocumentPairs.add(new IdDocumentPair(documentEntryId, cdaDocument));
 
         ProvideAndRegisterDocumentSetRequestType.Document document = new ProvideAndRegisterDocumentSetRequestType.Document();
-        document.setId(docEntryId);
+        document.setId(documentEntryId);
         document.setValue(bytes);
         request.getDocument().add(document);
       }
       
-      new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDAs(submitRequest, cdaDocuments, healthcareFacilityType, practiceSettingsCode);
+      new SubmitObjectsRequestHelper(repositoryId, homeCommunityId).buildFromCDAs(submitRequest, idDocumentPairs, healthcareFacilityType, practiceSettingsCode);
     }
     catch (Exception ex) {
       logger.error("", ex);
