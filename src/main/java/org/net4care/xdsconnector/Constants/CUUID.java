@@ -8,6 +8,7 @@ public class CUUID {
         public static final String stableDocument = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
         public static final String onDemandDocument = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
 
+        public static final String authorId = "urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d";
         public static final String classCode = "urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a";
         public static final String confidentialityCode = "urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f";
         public static final String eventCodeList = "urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4";
