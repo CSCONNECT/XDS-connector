@@ -71,7 +71,7 @@ public class TestSubmitObjectsRequestHelper {
             String cda = StringUtils.collectionToDelimitedString(lines, "\n");
             CodedValue healthcareFacilityTypeCode = new CodedValueBuilder().setCode(COID.DK.FacilityCode).setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName(COID.DK.facilityTypeCode2DisplayName(COID.DK.FacilityCode)).build();
             CodedValue practiceSettingCode = new CodedValueBuilder().setCode("408443003").setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName("almen medicin").build();
-            ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityTypeCode, practiceSettingCode);
+            ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnectorBean().buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityTypeCode, practiceSettingCode);
             JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
 //            String xml = serialize(requestPayload, request.getClass());
@@ -366,10 +366,10 @@ public class TestSubmitObjectsRequestHelper {
 
     @Test
     public void createUniqueId() {
-        ExternalIdentifierType extid = helper.createDocumentEntryUniqueId("DocumentEntry01", "2.16.840.1.113883.3.4208", "aa2386d0-79ea-11e3-981f-0800200c9a66");
+      ExternalIdentifierType extid = helper.createDocumentEntryUniqueId("DocumentEntry01", "2.16.840.1.113883.3.4208", "aa2386d079ea11e3");
         String control = "<ExternalIdentifier\n" +
                 "  identificationScheme=\"urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab\"\n" +
-                "  value=\"2.16.840.1.113883.3.4208^aa2386d079ea11e3981f0800200c9a66\" \n" +
+                "  value=\"2.16.840.1.113883.3.4208^aa2386d079ea11e3\" \n" +
                 "  id=\"" + extid.getId() + "\"\n" +
                 "  objectType=\"urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier\"\n" +
                 "  registryObject=\"DocumentEntry01\"\n" +

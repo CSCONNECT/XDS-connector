@@ -80,6 +80,7 @@ public class TestXds {
 
     @Test
     public void retrieveDocumentSet() {
+      
         RetrieveDocumentSetResponseType document = xdsRepositoryConnector.retrieveDocumentSet(documentForRetrieveUniqueId);
 
         Assert.assertTrue("Expected > 0 documents", document.getDocumentResponse().size() > 0);

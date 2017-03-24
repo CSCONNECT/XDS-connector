@@ -67,7 +67,7 @@ The library can either be built and installed on the local system, or picked fro
 
     dependencies {
       ...
-      compile("org.net4care:xds-connector:0.0.8")
+      compile("org.net4care:xds-connector:0.0.9")
     }
 ```
   - In *Config.groovy* add the library as a Spring bean package:
