@@ -71,7 +71,7 @@ public class TestSubmitObjectsRequestHelper {
             String cda = StringUtils.collectionToDelimitedString(lines, "\n");
             CodedValue healthcareFacilityTypeCode = new CodedValueBuilder().setCode(COID.DK.FacilityCode).setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName(COID.DK.facilityTypeCode2DisplayName(COID.DK.FacilityCode)).build();
             CodedValue practiceSettingCode = new CodedValueBuilder().setCode("408443003").setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName("almen medicin").build();
-            ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnectorBean().buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityTypeCode, practiceSettingCode);
+            ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityTypeCode, practiceSettingCode);
             JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
 
 //            String xml = serialize(requestPayload, request.getClass());

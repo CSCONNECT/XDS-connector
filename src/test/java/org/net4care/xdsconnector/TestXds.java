@@ -50,10 +50,10 @@ import org.springframework.util.StringUtils;
 public class TestXds {
 
     @Autowired
-    RepositoryConnector xdsRepositoryConnector;
+    IRepositoryConnector xdsRepositoryConnector;
 
     @Autowired
-    RegistryConnector xdsRegistryConnector;
+    IRegistryConnector xdsRegistryConnector;
 
     @Value("${xds.test.patientIDforQuery}")
     private String patientIDforQuery;

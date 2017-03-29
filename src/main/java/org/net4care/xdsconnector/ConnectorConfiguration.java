@@ -35,7 +35,7 @@ public class ConnectorConfiguration {
 
 	@Bean
 	public RepositoryConnector xdsRepositoryConnector(Jaxb2Marshaller marshaller) {
-		RepositoryConnectorBean client = new RepositoryConnectorBean();
+		RepositoryConnector client = new RepositoryConnector();
 		client.setDefaultUri(repositoryUrl);
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
@@ -53,7 +53,7 @@ public class ConnectorConfiguration {
 	
 	@Bean
 	public RegistryConnector xdsRegistryConnector(Jaxb2Marshaller marshaller) {
-		RegistryConnectorBean client = new RegistryConnectorBean();
+		RegistryConnector client = new RegistryConnector();
 		client.setDefaultUri(registryUrl);
 
 		AxiomSoapMessageFactory mf = new AxiomSoapMessageFactory();
