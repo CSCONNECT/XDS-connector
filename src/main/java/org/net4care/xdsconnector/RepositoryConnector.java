@@ -88,7 +88,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport implements IRe
       return result.getValue();
     }
     catch (Throwable t) {
-      throw new RuntimeException(t);
+      throw t;
     }
 	}
 
