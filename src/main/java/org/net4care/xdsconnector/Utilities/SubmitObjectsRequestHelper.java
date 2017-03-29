@@ -534,8 +534,7 @@ public class SubmitObjectsRequestHelper {
     
     public String formatUniqueId(String root, String extension) {
     if (extension != null && !extension.trim().isEmpty()) {
-      String newExtension = extension.replace("-", "");
-      return String.format("%s^%s", root, newExtension);
+      return String.format("%s^%s", root, extension.replace("-", "").substring(0, 16));
     } else {
       return root;
     }

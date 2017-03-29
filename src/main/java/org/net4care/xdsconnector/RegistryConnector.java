@@ -1,16 +1,22 @@
 package org.net4care.xdsconnector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 
 import org.net4care.xdsconnector.Constants.CUUID;
-import org.net4care.xdsconnector.Constants.XDSStatusValues;
-import org.net4care.xdsconnector.Utilities.FindDocumentsQueryBuilder;
-import org.net4care.xdsconnector.Utilities.FindSubmissionSetsQueryBuilder;
 import org.net4care.xdsconnector.Utilities.MessageCallback;
 import org.net4care.xdsconnector.Utilities.QueryBuilder;
-import org.net4care.xdsconnector.service.*;
+import org.net4care.xdsconnector.service.AdhocQueryRequestType;
+import org.net4care.xdsconnector.service.AdhocQueryResponseType;
+import org.net4care.xdsconnector.service.AdhocQueryType;
+import org.net4care.xdsconnector.service.ObjectFactory;
+import org.net4care.xdsconnector.service.ResponseOptionType;
+import org.net4care.xdsconnector.service.SlotType1;
+import org.net4care.xdsconnector.service.ValueListType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +26,7 @@ import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
-public class RegistryConnector extends WebServiceGatewaySupport {
+public class RegistryConnector extends WebServiceGatewaySupport implements IRegistryConnector {
 
     @Value("${xds.registryUrl}")
     private String registryUrl;
@@ -30,6 +36,10 @@ public class RegistryConnector extends WebServiceGatewaySupport {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+    /* (non-Javadoc)
+     * @see org.net4care.xdsconnector.RegistryConnector#executeQuery(org.net4care.xdsconnector.Utilities.QueryBuilder)
+     */
+    @Override
     public AdhocQueryResponseType executeQuery(QueryBuilder queryBuilder) {
 
         // Query the XDS registry
@@ -41,10 +51,18 @@ public class RegistryConnector extends WebServiceGatewaySupport {
         return (AdhocQueryResponseType) result.getValue();
     }
 
+    /* (non-Javadoc)
+     * @see org.net4care.xdsconnector.RegistryConnector#queryRegistry(java.lang.String, java.util.Map)
+     */
+    @Override
     public List<AdhocQueryResponseType> queryRegistry(String patientId, Map<String, String[]> parameters) {
         return queryRegistry(patientId, parameters, false); //default to full metadata
     }
 
+    /* (non-Javadoc)
+     * @see org.net4care.xdsconnector.RegistryConnector#queryRegistry(java.lang.String, java.util.Map, boolean)
+     */
+    @Override
     public List<AdhocQueryResponseType> queryRegistry(String patientId, Map<String, String[]> parameters, boolean responseAsObjRef) {
         if (patientId == null || patientId.isEmpty()) return null;
 

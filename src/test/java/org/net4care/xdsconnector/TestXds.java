@@ -50,10 +50,10 @@ import org.springframework.util.StringUtils;
 public class TestXds {
 
     @Autowired
-    RepositoryConnector xdsRepositoryConnector;
+    IRepositoryConnector xdsRepositoryConnector;
 
     @Autowired
-    RegistryConnector xdsRegistryConnector;
+    IRegistryConnector xdsRegistryConnector;
 
     @Value("${xds.test.patientIDforQuery}")
     private String patientIDforQuery;
@@ -80,6 +80,7 @@ public class TestXds {
 
     @Test
     public void retrieveDocumentSet() {
+      
         RetrieveDocumentSetResponseType document = xdsRepositoryConnector.retrieveDocumentSet(documentForRetrieveUniqueId);
 
         Assert.assertTrue("Expected > 0 documents", document.getDocumentResponse().size() > 0);

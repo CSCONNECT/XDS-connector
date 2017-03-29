@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
 
 @Configuration
 @PropertySource(value="classpath:xds.properties")
-public class RepositoryConnector extends WebServiceGatewaySupport {
+public class RepositoryConnector extends WebServiceGatewaySupport implements IRepositoryConnector {
 
   @Value("${xds.repositoryUrl}")
   private String repositoryUrl;
@@ -64,6 +64,11 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     return new PropertySourcesPlaceholderConfigurer();
   }
 
+  /* (non-Javadoc)
+   * @see org.net4care.xdsconnector.RepositoryConnnector#retrieveDocumentSet(java.lang.String)
+   */
+ 
+  @Override
   public RetrieveDocumentSetResponseType retrieveDocumentSet(String docId) {
     try {
       // using the JAXB Wrapper voids the requirement for a @XMLRootElement annotation on the domain model objects
@@ -79,7 +84,7 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
       @SuppressWarnings("unchecked")
       JAXBElement<RetrieveDocumentSetResponseType> result = (JAXBElement<RetrieveDocumentSetResponseType>) getWebServiceTemplate()
         .marshalSendAndReceive(requestPayload,  new MtomMessageCallback(repositoryUrl, "RetrieveDocumentSet"));
-
+      
       return result.getValue();
     }
     catch (Throwable t) {
@@ -87,6 +92,10 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
 	}
 
+  /* (non-Javadoc)
+   * @see org.net4care.xdsconnector.RepositoryConnnector#provideAndRegisterCDADocument(org.w3c.dom.Document, org.net4care.xdsconnector.Utilities.CodedValue, org.net4care.xdsconnector.Utilities.CodedValue)
+   */
+  @Override
   public RegistryResponseType provideAndRegisterCDADocument(Document cda, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     try {
       ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityType, practiceSettingsCode);
@@ -103,6 +112,10 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.net4care.xdsconnector.RepositoryConnnector#provideAndRegisterCDADocument(java.lang.String, org.net4care.xdsconnector.Utilities.CodedValue, org.net4care.xdsconnector.Utilities.CodedValue)
+   */
+  @Override
   public RegistryResponseType provideAndRegisterCDADocument(String cda, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     try {
       ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityType, practiceSettingsCode);
@@ -119,6 +132,10 @@ public class RepositoryConnector extends WebServiceGatewaySupport {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.net4care.xdsconnector.RepositoryConnnector#provideAndRegisterCDADocuments(java.util.List, org.net4care.xdsconnector.Utilities.CodedValue, org.net4care.xdsconnector.Utilities.CodedValue)
+   */
+  @Override
   public RegistryResponseType provideAndRegisterCDADocuments(List<String> cdas, CodedValue healthcareFacilityType, CodedValue practiceSettingsCode) {
     try {
       ProvideAndRegisterDocumentSetRequestType request = buildProvideAndRegisterCDADocumentsRequest(cdas, healthcareFacilityType, practiceSettingsCode);
