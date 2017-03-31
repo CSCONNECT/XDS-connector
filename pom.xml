@@ -159,11 +159,15 @@
   </pluginRepositories>
 
   <distributionManagement>
-    <repository>
-      <id>4S-artifactory</id>
-      <name>4S Artifactory</name>
-      <!-- TODO: needed to configure proper repository -->
+    <snapshotRepository>
+      <id>4S-artifactory-snapshots</id>
+      <name>4S Artifactory SNAPSHOTS</name>
       <url>http://artifactory.4s-online.dk/artifactory/libs-snapshot-local</url>
+    </snapshotRepository>
+    <repository>
+      <id>4S-artifactory-releases</id>
+      <name>4S Artifactory RELEASES</name>
+      <url>http://artifactory.4s-online.dk/artifactory/libs-release-local</url>
     </repository>
   </distributionManagement>
 </project>
