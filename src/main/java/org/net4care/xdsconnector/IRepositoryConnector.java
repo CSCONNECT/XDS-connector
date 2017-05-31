@@ -10,6 +10,8 @@ import org.w3c.dom.Document;
 public interface IRepositoryConnector {
 
   RetrieveDocumentSetResponseType retrieveDocumentSet(String docId);
+  
+  RetrieveDocumentSetResponseType retrieveDocumentSet(List<String> docIds);
 
   RegistryResponseType provideAndRegisterCDADocument(Document cda,
       CodedValue healthcareFacilityType, CodedValue practiceSettingsCode);
