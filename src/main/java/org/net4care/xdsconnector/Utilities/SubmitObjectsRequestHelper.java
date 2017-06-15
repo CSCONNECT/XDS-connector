@@ -162,7 +162,9 @@ public class SubmitObjectsRequestHelper {
         String organizationName = getString(cda, "ClinicalDocument/author/assignedAuthor/representedOrganization/name");
         String authorCodeSystem = getString(cda, "ClinicalDocument/author/assignedAuthor/id/@root");
         String authorCode = getString(cda, "ClinicalDocument/author/assignedAuthor/id/@extension");
-        classification.getSlot().add(createAuthorInstitution(organizationName, authorCode, authorCodeSystem));
+        if (isTextUseful(organizationName, authorCode, authorCodeSystem)) {
+          classification.getSlot().add(createAuthorInstitution(organizationName, authorCode, authorCodeSystem));
+        }
     }
 
     public SlotType1 createAuthorInstitution(String displayName, String code, String codeSystem) {
@@ -175,12 +177,14 @@ public class SubmitObjectsRequestHelper {
         String authorLastName = getString(cda, "ClinicalDocument/author/assignedAuthor/assignedPerson/name/family");
         List<String> authorGivenNames = getStrings(cda, "ClinicalDocument/author/assignedAuthor/assignedPerson/name/given");
         String authorFirstName = (authorGivenNames.size() > 0) ? authorGivenNames.remove(0) : "";
-        classification.getSlot().add(createAuthorPerson(authorLastName, authorFirstName, authorGivenNames.toArray(new String[0])));
+        if (isTextUseful(authorLastName)) {
+          classification.getSlot().add(createAuthorPerson(authorLastName, authorFirstName, authorGivenNames.toArray(new String[0])));
+        }
     }
 
     public SlotType1 createAuthorPerson(String lastName, String firstName, String... middleNames) {
         String authorMiddleName = StringUtils.arrayToDelimitedString(middleNames, "&");
-        String value = String.format("^%s^%s^%s^^^^^&ISO", lastName, firstName, authorMiddleName);
+        String value = String.format("^%s^%s^%s", lastName, firstName, authorMiddleName);
         return createSlot("authorPerson", value);
     }
 
@@ -326,13 +330,14 @@ public class SubmitObjectsRequestHelper {
         String legalLastName = getString(cda, "ClinicalDocument/legalAuthenticator/assignedEntity/assignedPerson/name/family");
         List<String> legalGivenNames = getStrings(cda, "ClinicalDocument/legalAuthenticator/assignedEntity/assignedPerson/name/given");
         String legalFirstName = (legalGivenNames.size() > 0) ? legalGivenNames.remove(0) : "";
-        if (legalLastName.length() > 0 || legalFirstName.length() > 0 || legalGivenNames.size() > 0) {
-            documentEntry.getSlot().add(createLegalAuthenticator(legalLastName, legalFirstName, (String[]) legalGivenNames.toArray(new String[0])));
+        if (isTextUseful(legalLastName)) {
+          documentEntry.getSlot().add(createLegalAuthenticator(legalLastName, legalFirstName, (String[]) legalGivenNames.toArray(new String[0])));
         }
+
     }
 
     public SlotType1 createLegalAuthenticator(String lastName, String firstName, String... middleNames) {
-        String value = String.format("^%s^%s^%s^^^^^^^&&ISO", lastName, firstName, StringUtils.arrayToDelimitedString(middleNames, "&"));
+        String value = String.format("^%s^%s^%s", lastName, firstName, StringUtils.arrayToDelimitedString(middleNames, "&"));
         return createSlot("legalAuthenticator", value);
     }
 
@@ -639,5 +644,18 @@ public class SubmitObjectsRequestHelper {
         externalIdentifier.setName(createInternationalString(name));
         externalIdentifier.setValue(value);
         return externalIdentifier;
+    }
+    
+    private static boolean isTextUseful(String text) {
+      return text != null && !text.trim().isEmpty();
+    }
+    
+    private static boolean isTextUseful(String...texts) {
+      for (String text : texts) {
+        if (!isTextUseful(text)) {
+          return false;
+        }
+      }
+      return true;
     }
 }

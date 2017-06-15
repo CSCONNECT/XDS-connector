@@ -72,10 +72,7 @@ public class TestSubmitObjectsRequestHelper {
             CodedValue healthcareFacilityTypeCode = new CodedValueBuilder().setCode(COID.DK.FacilityCode).setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName(COID.DK.facilityTypeCode2DisplayName(COID.DK.FacilityCode)).build();
             CodedValue practiceSettingCode = new CodedValueBuilder().setCode("408443003").setCodeSystem(COID.DK.FacilityCodeSystem).setDisplayName("almen medicin").build();
             ProvideAndRegisterDocumentSetRequestType request = new RepositoryConnector().buildProvideAndRegisterCDADocumentRequest(cda, healthcareFacilityTypeCode, practiceSettingCode);
-            JAXBElement<ProvideAndRegisterDocumentSetRequestType> requestPayload = new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
-
-//            String xml = serialize(requestPayload, request.getClass());
-//            System.out.println(xml);
+            new ObjectFactory().createProvideAndRegisterDocumentSetRequest(request);
         } catch (Exception ex) {
             assertTrue("Unexpected exception: " + ex.getMessage(), false);
         }
@@ -117,7 +114,7 @@ public class TestSubmitObjectsRequestHelper {
         SlotType1 slot = helper.createAuthorPerson("Andersen", "Anders", "Frederik", "Ingolf");
         String control = "<Slot name=\"authorPerson\" " + xmlns + ">\n" +
                 "  <ValueList>\n" +
-                "    <Value>^Andersen^Anders^Frederik&amp;Ingolf^^^^^&amp;ISO</Value>\n" +
+                "    <Value>^Andersen^Anders^Frederik&amp;Ingolf</Value>\n" +
                 "  </ValueList>\n" +
                 "</Slot>";
         assertXMLEqual(control, factory.createSlot(slot));
@@ -261,7 +258,7 @@ public class TestSubmitObjectsRequestHelper {
         SlotType1 slot = helper.createLegalAuthenticator("Andersen", "Anders", "Frederik", "Ingolf");
         String control = "<Slot name=\"legalAuthenticator\" " + xmlns + ">\n" +
                 "  <ValueList>\n" +
-                "    <Value>^Andersen^Anders^Frederik&amp;Ingolf^^^^^^^&amp;&amp;ISO</Value>\n" +
+                "    <Value>^Andersen^Anders^Frederik&amp;Ingolf</Value>\n" +
                 "  </ValueList>\n" +
                 "</Slot>";
         assertXMLEqual(control, factory.createSlot(slot));

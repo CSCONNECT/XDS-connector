@@ -2,10 +2,6 @@ package org.net4care.xdsconnector.Utilities;
 
 import org.net4care.xdsconnector.Constants.CUUID;
 import org.net4care.xdsconnector.Constants.DocumentEntryParamenters;
-import org.net4care.xdsconnector.Constants.XDSStatusValues;
-import org.net4care.xdsconnector.service.*;
-
-import javax.xml.bind.JAXBElement;
 
 //Builder for Registry Stored Queries of type FindDocuments
 //IHE ITI TF-2a section 3.18.4.1.2.3.7.1
@@ -44,32 +40,32 @@ public class FindDocumentsQueryBuilder extends QueryBuilder {
     }
 
     public FindDocumentsQueryBuilder setCreationTimeFrom(String creationTimeFrom) {
-        addMultiValueSlot(DocumentEntryParamenters.CreationTimeFrom, formatSingleValueQueryParameter(creationTimeFrom));
+        addMultiValueSlot(DocumentEntryParamenters.CreationTimeFrom, creationTimeFrom);
         return this;
     }
 
     public FindDocumentsQueryBuilder setCreationTimeTo(String creationTimeTo) {
-        addMultiValueSlot(DocumentEntryParamenters.CreationTimeTo, formatSingleValueQueryParameter(creationTimeTo));
+        addMultiValueSlot(DocumentEntryParamenters.CreationTimeTo, creationTimeTo);
         return this;
     }
 
     public FindDocumentsQueryBuilder setServiceStartTimeFrom(String serviceStartTimeFrom) {
-        addMultiValueSlot(DocumentEntryParamenters.ServiceStartTimeFrom, formatSingleValueQueryParameter(serviceStartTimeFrom));
+        addMultiValueSlot(DocumentEntryParamenters.ServiceStartTimeFrom, serviceStartTimeFrom);
         return this;
     }
 
     public FindDocumentsQueryBuilder setServiceStartTimeTo(String serviceStartTimeTo) {
-        addMultiValueSlot(DocumentEntryParamenters.ServiceStartTimeTo, formatSingleValueQueryParameter(serviceStartTimeTo));
+        addMultiValueSlot(DocumentEntryParamenters.ServiceStartTimeTo, serviceStartTimeTo);
         return this;
     }
 
     public FindDocumentsQueryBuilder setServiceStopTimeFrom(String serviceStopTimeFrom) {
-        addMultiValueSlot(DocumentEntryParamenters.ServiceStopTimeFrom, formatSingleValueQueryParameter(serviceStopTimeFrom));
+        addMultiValueSlot(DocumentEntryParamenters.ServiceStopTimeFrom, serviceStopTimeFrom);
         return this;
     }
 
     public FindDocumentsQueryBuilder setServiceStopTimeTo(String serviceStopTimeTo) {
-        addMultiValueSlot(DocumentEntryParamenters.ServiceStopTimeTo, formatSingleValueQueryParameter(serviceStopTimeTo));
+        addMultiValueSlot(DocumentEntryParamenters.ServiceStopTimeTo, serviceStopTimeTo);
         return this;
     }
 
